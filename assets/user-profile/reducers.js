@@ -34,7 +34,7 @@ const initialState = {
     selectedItem: null,
     editorFullscreen: false,
     locators: [],
-    userFolders: [],
+    folders: [],
 };
 
 export default function itemReducer(state = initialState, action) {
@@ -195,7 +195,7 @@ export default function itemReducer(state = initialState, action) {
     case RECIEVE_USER_FOLDERS:
         return {
             ...state,
-            userFolders: action.payload,
+            folders: action.payload,
         };
 
     default:

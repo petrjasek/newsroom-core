@@ -36,6 +36,7 @@ class TopicEditor extends React.Component {
         this.onSubscribeChanged = this.onSubscribeChanged.bind(this);
         this.saveTopic = this.saveTopic.bind(this);
         this.handleTabClick = this.handleTabClick.bind(this);
+        this.onFolderChange = this.onFolderChange.bind(this);
     }
 
     componentDidMount() {
@@ -81,7 +82,7 @@ class TopicEditor extends React.Component {
 
     updateFormValidity(topic) {
         const original = get(this.props, 'topic') || {};
-        const isDirty = ['label', 'notifications', 'is_global'].some(
+        const isDirty = ['label', 'notifications', 'is_global', 'folder'].some(
             (field) => get(original, field) !== get(topic, field)
         ) || !isEqual(original.subscribers, topic.subscribers);
 
@@ -129,6 +130,15 @@ class TopicEditor extends React.Component {
 
         this.setState({topic});
         this.props.onTopicChanged();
+    }
+
+    onFolderChange(folder) {
+        const topic = {...this.state.topic};
+
+        topic.folder = folder ? folder._id : null;
+
+        this.setState({topic});
+        this.updateFormValidity(topic);
     }
 
     saveTopic(event) {
@@ -272,6 +282,8 @@ class TopicEditor extends React.Component {
                                 onChange={this.onChangeHandler}
                                 onSubscribeChanged={this.onSubscribeChanged}
                                 readOnly={isReadOnly}
+                                folders={this.props.folders}
+                                onFolderChange={this.onFolderChange}
                             />
                             <TopicParameters
                                 topic={updatedTopic}
@@ -340,6 +352,7 @@ TopicEditor.propTypes = {
     isAdmin: PropTypes.bool,
     companyUsers: PropTypes.array,
     user: PropTypes.object,
+    folders: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
@@ -348,6 +361,7 @@ const mapStateToProps = (state) => ({
     navigations: state.navigations || [],
     editorFullscreen: topicEditorFullscreenSelector(state),
     companyUsers: state.monitoringProfileUsers || [],
+    folders: state.folders,
 });
 
 const mapDispatchToProps = (dispatch) => ({

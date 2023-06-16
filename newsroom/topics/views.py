@@ -59,6 +59,7 @@ def update_topic(topic_id):
         "company": current_user.get("company"),
         "subscribers": [ObjectId(uid) for uid in data["subscribers"]],
         "is_global": data.get("is_global", False),
+        "folder": data.get("folder", None),
     }
 
     response = get_resource_service("topics").patch(id=ObjectId(topic_id), updates=updates)

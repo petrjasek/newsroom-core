@@ -12,15 +12,20 @@ const TopicList = ({topics, selectedTopicId, actions, users, folders}) => {
         return null;
     }
 
-    const renderedFolders = folders.map((folder) => (
-        <TopicFolder key={folder._id} folder={folder} topics={topics.filter((topic) => topic.folder === folder._id)} />
-    ));
-
-    const renderedTopics = topics.filter((topic) => topic.folder == null).map(
-        (topic) => (
-            <Topic key={topic._id} topic={topic} actions={actions} users={users} selectedTopicId={selectedTopicId} />
-        )
+    const renderTopic = (topic) => (
+        <Topic key={topic._id} topic={topic} actions={actions} users={users} selectedTopicId={selectedTopicId} />
     );
+
+    const renderedFolders = folders.map((folder) => {
+        const filteredTopics = topics.filter((topic) => topic.folder === folder._id);
+        return (
+            <TopicFolder key={folder._id} folder={folder} topics={filteredTopics}>
+                {filteredTopics.map(renderTopic)}
+            </TopicFolder>
+        );
+    });
+
+    const renderedTopics = topics.filter((topic) => topic.folder == null).map(renderTopic);
 
     return Array.prototype.concat(renderedFolders, renderedTopics);
 };

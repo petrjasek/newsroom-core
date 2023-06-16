@@ -221,7 +221,7 @@ class FollowedTopics extends React.Component {
                                 selectedTopicId={get(this.props.selectedItem, '_id')}
                                 actions={this.actions}
                                 users={this.props.companyUsers}
-                                folders={this.props.userFolders}
+                                folders={this.props.folders}
                             />
                         </div>
                     </div>
@@ -265,7 +265,7 @@ FollowedTopics.propTypes = {
     companyUsers: PropTypes.array,
     saveNewFolder: PropTypes.func,
     fetchUserFolders: PropTypes.func,
-    userFolders: PropTypes.arrayOf(PropTypes.shape({
+    folders: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
         section: PropTypes.string.isRequired,
     })),
@@ -281,7 +281,7 @@ const mapStateToProps = (state, ownProps) => ({
     editorFullscreen: topicEditorFullscreenSelector(state),
     globalTopicsEnabled: globalTopicsEnabledSelector(state, ownProps.topicType),
     companyUsers: state.monitoringProfileUsers || [],
-    userFolders: state.userFolders,
+    folders: state.folders,
 });
 
 const mapDispatchToProps = (dispatch) => ({

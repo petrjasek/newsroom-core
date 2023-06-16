@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {gettext} from 'utils';
 
-export function TopicFolder({folder, topics}) {
+export function TopicFolder({folder, topics, children}) {
     const [opened, setOpened] = useState(false);
 
     return (
@@ -22,6 +22,11 @@ export function TopicFolder({folder, topics}) {
                     <button type="button" className="icon-button icon-button--tertiary" title={gettext("Folder actions")}><i className="icon--more"></i></button>
                 </div>
             </div>
+            {opened && (
+                <div className="simple-card__group-content">
+                    {children}
+                </div>
+            )}
         </div>
     );
 }

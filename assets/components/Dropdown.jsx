@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {Dropdown as BootstrapDropdown} from 'bootstrap';
 
-export function Dropdown({children, isActive, icon, label, className, buttonProps}) {
+export function Dropdown({children, isActive, icon, label, className, buttonProps, small}) {
 
     const dropdown = React.useRef();
     let dropdownInstance = null;
@@ -41,6 +41,7 @@ export function Dropdown({children, isActive, icon, label, className, buttonProp
                 {
                     active: isActive,
                     'nh-dropdown-button--text-only': textOnly,
+                    'nh-dropdown-button--small': small,
                 }
             )}
             aria-haspopup="true"
