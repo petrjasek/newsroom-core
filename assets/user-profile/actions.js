@@ -220,3 +220,31 @@ export function pushNotification(push) {
         }
     };
 }
+
+const getFoldersUrl = (state) => `api/users/${state.user._id}/topic_folders`;
+
+export function saveNewFolder(name) {
+    return (dispatch, getState) => {
+        const state = getState();
+        const url = getFoldersUrl(state);
+        return server.post(url, {
+            name: name,
+            section: state.selectedMenu === "events" ? "agenda" : "wire",
+        })
+            .then(() => {
+                dispatch(fetchUserFolders());
+            });
+    };
+}
+
+export const RECIEVE_USER_FOLDERS = 'RECIEVE_USER_FOLDERS';
+export function fetchUserFolders() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const url = getFoldersUrl(state);
+
+        return server.get(url).then((res) => {
+            dispatch({type: RECIEVE_USER_FOLDERS, payload: res._items});
+        });
+    };
+}

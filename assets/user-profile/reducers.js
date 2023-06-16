@@ -8,6 +8,7 @@ import {
     SELECT_MENU_ITEM,
     SELECT_PROFILE_MENU,
     SET_TOPIC_EDITOR_FULLSCREEN,
+    RECIEVE_USER_FOLDERS,
 } from './actions';
 
 import {RENDER_MODAL, CLOSE_MODAL, MODAL_FORM_VALID, MODAL_FORM_INVALID, ADD_EDIT_USERS} from 'actions';
@@ -33,6 +34,7 @@ const initialState = {
     selectedItem: null,
     editorFullscreen: false,
     locators: [],
+    userFolders: [],
 };
 
 export default function itemReducer(state = initialState, action) {
@@ -189,6 +191,12 @@ export default function itemReducer(state = initialState, action) {
             ]
         };
     }
+
+    case RECIEVE_USER_FOLDERS:
+        return {
+            ...state,
+            userFolders: action.payload,
+        };
 
     default:
         return state;

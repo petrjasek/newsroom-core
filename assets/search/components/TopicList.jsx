@@ -1,73 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import {get} from 'lodash';
-import classNames from 'classnames';
 
-import {gettext, formatDate, formatTime} from 'utils';
-import ActionButton from 'components/ActionButton';
-import {ToolTip} from '../../ui/components/ToolTip';
-import AuditInformation from 'components/AuditInformation';
+import {Topic} from './Topic';
+import {TopicFolder} from './TopicFolder';
 
-const TopicList = ({topics, selectedTopicId, actions, users}) => {
-    if (get(topics, 'length', 0) < 0) {
+const TopicList = ({topics, selectedTopicId, actions, users, folders}) => {
+
+    if (get(topics, 'length', 0) < 0 && get(folders, 'length', 0) < 0) {
         return null;
     }
 
-    const getActionButtons = (topic) => actions.map(
-        (action) => (
-            <ActionButton
-                key={action.name}
-                item={topic}
-                className='icon-button icon-button--primary'
-                displayName={false}
-                action={action}
-                disabled={action.when != null && !action.when(topic)}
-            />
+    const renderedFolders = folders.map((folder) => (
+        <TopicFolder key={folder._id} folder={folder} topics={topics.filter((topic) => topic.folder === folder._id)} />
+    ));
+
+    const renderedTopics = topics.filter((topic) => topic.folder == null).map(
+        (topic) => (
+            <Topic key={topic._id} topic={topic} actions={actions} users={users} selectedTopicId={selectedTopicId} />
         )
     );
 
-    return topics.map(
-        (topic) => (
-            <div key={topic._id} className=''>
-                <div className={classNames(
-                    'simple-card',
-                    {'simple-card--selected': selectedTopicId === topic._id}
-                )}>
-                    <div className="simple-card__header simple-card__header-with-icons">
-                        <ToolTip>
-                            <h6
-                                className="simple-card__headline"
-                                title={topic.label || topic.name}
-                            >
-                                {topic.label || topic.name}
-                            </h6>
-                        </ToolTip>
-                        <div className='simple-card__icons'>
-                            {getActionButtons(topic)}
-                        </div>
-                    </div>
-                    <p>{topic.description || ' '}</p>
-                    {topic.is_global ? (
-                        <span className="simple-card__date">
-                            <AuditInformation
-                                item={topic}
-                                users={users}
-                                className="p-0"
-                                noPadding={true}
-                            />
-                        </span>
-                    ) : (
-                        <span className="simple-card__date">
-                            {gettext('Created on {{ date }} at {{ time }}', {
-                                date: formatDate(topic._created),
-                                time: formatTime(topic._created),
-                            })}
-                        </span>
-                    )}
-                </div>
-            </div>
-        )
-    );
+    return Array.prototype.concat(renderedFolders, renderedTopics);
 };
 
 TopicList.propTypes = {
@@ -79,6 +34,9 @@ TopicList.propTypes = {
         action: PropTypes.func,
     })),
     users: PropTypes.array,
+    folders: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+    })),
 };
 
 export default TopicList;

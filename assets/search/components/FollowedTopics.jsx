@@ -15,7 +15,10 @@ import {
     shareTopic,
     deleteTopic,
     selectMenuItem,
+    saveNewFolder,
+    fetchUserFolders,
 } from 'user-profile/actions';
+
 import {
     selectedItemSelector,
     selectedMenuSelector,
@@ -38,7 +41,7 @@ class FollowedTopics extends React.Component {
         this.onTopicChanged = this.onTopicChanged.bind(this);
         this.toggleGlobal = this.toggleGlobal.bind(this);
 
-        this.state = {showGlobal: false};
+        this.state = {showGlobal: false, newFolder: null};
 
         this.actions = [{
             id: 'edit',
@@ -70,6 +73,10 @@ class FollowedTopics extends React.Component {
         this.onTopicChanged();
         if (this.props.user && this.props.user.company && this.props.user.company.length) {
             this.props.fetchCompanyUsers(this.props.user.company);
+        }
+
+        if (this.props.user) {
+            this.props.fetchUserFolders();
         }
     }
 
@@ -124,6 +131,14 @@ class FollowedTopics extends React.Component {
         this.setState((previousState) => ({showGlobal: !previousState.showGlobal}));
     }
 
+    saveNewFolder() {
+        this.props.saveNewFolder(this.state.newFolder.name).then(() => {
+            this.setState({newFolder: null});
+        }, (reason) => {
+            this.setState({newFolder: {...this.state.newFolder, error: reason}})
+        });
+    }
+
     render() {
         const editorOpen = this.props.selectedItem;
         const editorOpenInFullscreen = editorOpen && this.props.editorFullscreen;
@@ -137,7 +152,7 @@ class FollowedTopics extends React.Component {
                 {!editorOpenInFullscreen && (
                     <div className="profile-content__topics-main d-flex flex-column flex-grow-1">
                         {!this.props.globalTopicsEnabled ? null : (
-                            <div className="pt-xl-4 pt-3 px-xl-4 me-0">
+                            <div className="d-flex justify-content-between pt-xl-4 pt-3 px-xl-4 me-0">
                                 <div className="toggle-button__group toggle-button__group--navbar ms-0 me-3">
                                     <button
                                         className={classNames(
@@ -158,14 +173,55 @@ class FollowedTopics extends React.Component {
                                         {gettext('Company Topics')}
                                     </button>
                                 </div>
+                                <div className="toggle-button__group toggle-button__group--navbar ms-0 me-0">
+                                    <button type="button" className="nh-button nh-button--tertiary" title={gettext('Create new folder')} onClick={() => {
+                                        this.setState({newFolder: {name: ''}});
+                                    }}><i className="icon--folder-create"></i>{gettext('New folder')}</button>
+                                </div>
                             </div>
                         )}
                         <div className="simple-card__list pt-xl-4 pt-3 px-xl-4 me-0">
+                            {this.state.newFolder != null && (
+                                <div className="simple-card__group">
+                                    <div className={classNames("simple-card__group-header", {'simple-card__group-header--selected': this.state.newFolder.error})}>
+                                        <div className="d-flex flex-row flex-grow-1 align-items-center gap-2 ps-1">
+                                            <i className="icon--folder icon--small"></i>
+                                            <input type="text"
+                                                aria-label={gettext("Folder name")}
+                                                className="form-control form-control--small"
+                                                maxLength="30"
+                                                placeholder={gettext("My New folder")}
+                                                value={this.state.newFolder.name}
+                                                onChange={(event) => {
+                                                    this.setState({newFolder: {name: event.target.value || ''}});
+                                                }}
+                                            />
+                                            <button type="button"
+                                                className="icon-button icon-button--secondary icon-button--bordered icon-button--small"
+                                                aria-label={gettext("Cancel")}
+                                                title={gettext("Cancel")}
+                                                onClick={() => {
+                                                    this.setState({newFolder: null})
+                                                }}><i className="icon--close-thin"></i></button>
+                                            <button type="button"
+                                                className="icon-button icon-button--primary icon-button--bordered icon-button--small"
+                                                aria-label={gettext("Save")}
+                                                title={gettext("Save")}
+                                                onClick={() => {
+                                                    this.saveNewFolder();
+                                                }}><i className="icon--check"></i></button>
+                                        </div>
+                                    </div>
+                                    <div className="simple-card__group-content"></div>
+                                </div>
+                            )}
+
                             <TopicList
                                 topics={this.getFilteredTopics()}
                                 selectedTopicId={get(this.props.selectedItem, '_id')}
                                 actions={this.actions}
                                 users={this.props.companyUsers}
+                                folders={this.props.userFolders}
                             />
                         </div>
                     </div>
@@ -207,6 +263,12 @@ FollowedTopics.propTypes = {
     user: PropTypes.object,
     fetchCompanyUsers: PropTypes.func,
     companyUsers: PropTypes.array,
+    saveNewFolder: PropTypes.func,
+    fetchUserFolders: PropTypes.func,
+    userFolders: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        section: PropTypes.string.isRequired,
+    })),
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -219,6 +281,7 @@ const mapStateToProps = (state, ownProps) => ({
     editorFullscreen: topicEditorFullscreenSelector(state),
     globalTopicsEnabled: globalTopicsEnabledSelector(state, ownProps.topicType),
     companyUsers: state.monitoringProfileUsers || [],
+    userFolders: state.userFolders,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -227,6 +290,8 @@ const mapDispatchToProps = (dispatch) => ({
     deleteTopic: (topic) => dispatch(deleteTopic(topic)),
     selectMenuItem: (item) => dispatch(selectMenuItem(item)),
     fetchCompanyUsers: (companyId) => dispatch(fetchCompanyUsers(companyId, true)),
+    saveNewFolder: (name) => dispatch(saveNewFolder(name)),
+    fetchUserFolders: () => dispatch(fetchUserFolders()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FollowedTopics);
