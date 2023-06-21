@@ -19,7 +19,9 @@ export function TopicFolder({folder, topics, children}) {
                 </div>
                 <span className="badge badge--neutral rounded-pill me-2">{topics.length}</span>
                 <div className="simple-card__group-header-actions">
-                    <button type="button" className="icon-button icon-button--tertiary" title={gettext("Folder actions")}><i className="icon--more"></i></button>
+                    <Dropdown>
+                        <button type="button" className="icon-button icon-button--tertiary" title={gettext("Folder actions")}><i className="icon--more"></i></button>
+                    </Dropdown>
                 </div>
             </div>
             {opened && (
