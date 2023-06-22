@@ -5,6 +5,7 @@ import {store as userProfileStore} from './store';
 import {getLocale} from '../utils';
 import {reloadMyTopics as reloadMyAgendaTopics} from '../agenda/actions';
 import {reloadMyTopics as reloadMyWireTopics} from '../wire/actions';
+import { patch } from 'fetch-mock';
 
 export const GET_TOPICS = 'GET_TOPICS';
 export function getTopics(topics) {
@@ -221,7 +222,7 @@ export function pushNotification(push) {
     };
 }
 
-const getFoldersUrl = (state) => `api/users/${state.user._id}/topic_folders`;
+const getFoldersUrl = (state) => `/api/users/${state.user._id}/topic_folders`;
 
 export function saveNewFolder(name) {
     return (dispatch, getState) => {
@@ -245,6 +246,29 @@ export function fetchUserFolders() {
 
         return server.get(url).then((res) => {
             dispatch({type: RECIEVE_USER_FOLDERS, payload: res._items});
+        }, (reason) => {
+            console.error(reason);
+            return Promise.reject();
         });
     };
+}
+
+export const TOPIC_UPDATED = 'TOPIC_UPDATED';
+export function moveTopic(topicId, folder) {
+    return (dispatch, getState) => {
+        const updates = {
+            folder: folder != null ? folder._id : null,
+        };
+
+        const state = getState();
+        const topic = state.topics.find((topic) => topic._id === topicId);
+        const url = `/api/users/${state.user._id}/topics/${topicId}`;
+
+        server.patch(url, updates, topic._etag).then((response) => {
+            updates._id = response._id;
+            updates._etag = response._etag;
+            updates._updated = response._updated;
+            dispatch({type: TOPIC_UPDATED, payload: updates});
+        });
+    }
 }

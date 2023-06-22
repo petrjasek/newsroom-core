@@ -17,6 +17,7 @@ import {
     selectMenuItem,
     saveNewFolder,
     fetchUserFolders,
+    moveTopic,
 } from 'user-profile/actions';
 
 import {
@@ -40,8 +41,9 @@ class FollowedTopics extends React.Component {
         this.getFilteredTopics = this.getFilteredTopics.bind(this);
         this.onTopicChanged = this.onTopicChanged.bind(this);
         this.toggleGlobal = this.toggleGlobal.bind(this);
+        this.toggleFolderPopover = this.toggleFolderPopover.bind(this);
 
-        this.state = {showGlobal: false, newFolder: null};
+        this.state = {showGlobal: false, newFolder: null, folderPopover: null};
 
         this.actions = [{
             id: 'edit',
@@ -131,12 +133,20 @@ class FollowedTopics extends React.Component {
         this.setState((previousState) => ({showGlobal: !previousState.showGlobal}));
     }
 
+    createNewFolder() {
+        this.setState({newFolder: {name: ''}, folderPopover: null});
+    }
+
     saveNewFolder() {
         this.props.saveNewFolder(this.state.newFolder.name).then(() => {
             this.setState({newFolder: null});
         }, (reason) => {
             this.setState({newFolder: {...this.state.newFolder, error: reason}})
         });
+    }
+
+    toggleFolderPopover(folder) {
+        this.setState({folderPopover: !this.state.folderPopover || this.state.folderPopover !== folder._id ? folder._id : null})
     }
 
     render() {
@@ -151,35 +161,37 @@ class FollowedTopics extends React.Component {
             <div className={containerClasses}>
                 {!editorOpenInFullscreen && (
                     <div className="profile-content__topics-main d-flex flex-column flex-grow-1">
-                        {!this.props.globalTopicsEnabled ? null : (
-                            <div className="d-flex justify-content-between pt-xl-4 pt-3 px-xl-4 me-0">
-                                <div className="toggle-button__group toggle-button__group--navbar ms-0 me-3">
-                                    <button
-                                        className={classNames(
-                                            'toggle-button',
-                                            {'toggle-button--active': !this.state.showGlobal}
-                                        )}
-                                        onClick={this.toggleGlobal}
-                                    >
-                                        {gettext('My Topics')}
-                                    </button>
-                                    <button
-                                        className={classNames(
-                                            'toggle-button',
-                                            {'toggle-button--active': this.state.showGlobal}
-                                        )}
-                                        onClick={this.toggleGlobal}
-                                    >
-                                        {gettext('Company Topics')}
-                                    </button>
-                                </div>
-                                <div className="toggle-button__group toggle-button__group--navbar ms-0 me-0">
-                                    <button type="button" className="nh-button nh-button--tertiary" title={gettext('Create new folder')} onClick={() => {
-                                        this.setState({newFolder: {name: ''}});
-                                    }}><i className="icon--folder-create"></i>{gettext('New folder')}</button>
-                                </div>
+                        <div className="d-flex justify-content-between pt-xl-4 pt-3 px-xl-4 me-0">
+                            {!this.props.globalTopicsEnabled ? null : (
+                            <div className="toggle-button__group toggle-button__group--navbar ms-0 me-3">
+                                <button
+                                    className={classNames(
+                                        'toggle-button',
+                                        {'toggle-button--active': !this.state.showGlobal}
+                                    )}
+                                    onClick={this.toggleGlobal}
+                                >
+                                    {gettext('My Topics')}
+                                </button>
+                                <button
+                                    className={classNames(
+                                        'toggle-button',
+                                        {'toggle-button--active': this.state.showGlobal}
+                                    )}
+                                    onClick={this.toggleGlobal}
+                                >
+                                    {gettext('Company Topics')}
+                                </button>
                             </div>
-                        )}
+                            )}
+                            <div className="toggle-button__group toggle-button__group--navbar ms-0 me-0">
+                                <button type="button" className="nh-button nh-button--tertiary"
+                                    title={gettext('Create new folder')}
+                                    onClick={() => this.createNewFolder()}>
+                                    <i className="icon--folder-create"></i>{gettext('New folder')}
+                                </button>
+                            </div>
+                        </div>
                         <div className="simple-card__list pt-xl-4 pt-3 px-xl-4 me-0">
                             {this.state.newFolder != null && (
                                 <div className="simple-card__group">
@@ -222,6 +234,9 @@ class FollowedTopics extends React.Component {
                                 actions={this.actions}
                                 users={this.props.companyUsers}
                                 folders={this.props.folders}
+                                folderPopover={this.state.folderPopover}
+                                toggleFolderPopover={this.toggleFolderPopover}
+                                moveTopic={this.props.moveTopic}
                             />
                         </div>
                     </div>
@@ -292,6 +307,7 @@ const mapDispatchToProps = (dispatch) => ({
     fetchCompanyUsers: (companyId) => dispatch(fetchCompanyUsers(companyId, true)),
     saveNewFolder: (name) => dispatch(saveNewFolder(name)),
     fetchUserFolders: () => dispatch(fetchUserFolders()),
+    moveTopic: (topicId, folder) => dispatch(moveTopic(topicId, folder)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FollowedTopics);

@@ -98,10 +98,16 @@ class Server {
      * @param {Object} data
      * @return {Promise}
      */
-    patch(url, data) {
+    patch(url, data, etag) {
+        const headers = {'Content-Type': 'application/json'};
+
+        if (etag != null) {
+            headers['If-Match'] = etag;
+        }
+
         return fetch(url, options({
             method: 'PATCH',
-            headers: {'Content-Type': 'application/json'},
+            headers: headers,
             body: JSON.stringify(data),
         })).then(checkStatus);
     }

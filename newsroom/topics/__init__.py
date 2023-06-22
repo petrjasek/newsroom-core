@@ -12,6 +12,8 @@ def init_app(app):
     topics.topics_service = topics.TopicsService("topics", superdesk.get_backend())
     topics.TopicsResource("topics", app, topics.topics_service)
 
+    print("IONININ")
+
     superdesk.register_resource("topic_folders", folders.FoldersResource, folders.FoldersService, _app=app)
     superdesk.register_resource("user_topic_folders", folders.UserFoldersResource, folders.UserFoldersService, _app=app)
     superdesk.register_resource(

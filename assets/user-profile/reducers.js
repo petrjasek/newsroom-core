@@ -9,6 +9,7 @@ import {
     SELECT_PROFILE_MENU,
     SET_TOPIC_EDITOR_FULLSCREEN,
     RECIEVE_USER_FOLDERS,
+    TOPIC_UPDATED,
 } from './actions';
 
 import {RENDER_MODAL, CLOSE_MODAL, MODAL_FORM_VALID, MODAL_FORM_INVALID, ADD_EDIT_USERS} from 'actions';
@@ -196,6 +197,18 @@ export default function itemReducer(state = initialState, action) {
         return {
             ...state,
             folders: action.payload,
+        };
+    
+    case TOPIC_UPDATED:
+        return {
+            ...state,
+            topics: state.topics.map((topic) => {
+                if (topic._id === action.payload._id) {
+                    return {...topic, ...action.payload};
+                }
+
+                return topic;
+            }),
         };
 
     default:
