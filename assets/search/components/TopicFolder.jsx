@@ -8,11 +8,12 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
     const [opened, setOpened] = useState(false);
     const [popover, togglePopover] = useState(false);
     const [dragover, setDragOver] = useState(false);
+    const [editing, setEditing] = useState(false);
     const buttonRef = useRef(null);
     const actions = [
         {
             id: 'edit',
-            name: gettext("Edit"),
+            name: gettext("Rename"),
             icon: 'edit',
         },
         {
@@ -78,7 +79,7 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
                             <PopoverBody>
                                 {actions.map((action) => (
                                     <button key={action.id} type="button" className="dropdown-item">
-                                        <icon className={"icon--" + action.icon} />
+                                        <i className={"icon--" + action.icon} />
                                         {action.name}
                                     </button>
                                 ))}

@@ -30,6 +30,7 @@ import {
 import MonitoringEditor from 'search/components/MonitoringEditor';
 import TopicEditor from 'search/components/TopicEditor';
 import TopicList from 'search/components/TopicList';
+import {TopicFolderEditor} from './TopicFolderEditor';
 
 class FollowedTopics extends React.Component {
     constructor(props, context) {
@@ -42,6 +43,7 @@ class FollowedTopics extends React.Component {
         this.onTopicChanged = this.onTopicChanged.bind(this);
         this.toggleGlobal = this.toggleGlobal.bind(this);
         this.toggleFolderPopover = this.toggleFolderPopover.bind(this);
+        this.saveNewFolder = this.saveNewFolder.bind(this);
 
         this.state = {showGlobal: false, newFolder: null, folderPopover: null};
 
@@ -134,14 +136,14 @@ class FollowedTopics extends React.Component {
     }
 
     createNewFolder() {
-        this.setState({newFolder: {name: ''}, folderPopover: null});
+        this.setState({newFolder: {}, folderPopover: null});
     }
 
-    saveNewFolder() {
-        this.props.saveNewFolder(this.state.newFolder.name).then(() => {
+    saveNewFolder(name) {
+        this.props.saveNewFolder(name).then(() => {
             this.setState({newFolder: null});
         }, (reason) => {
-            this.setState({newFolder: {...this.state.newFolder, error: reason}})
+            this.setState({newFolder: {error: reason}})
         });
     }
 
@@ -194,38 +196,12 @@ class FollowedTopics extends React.Component {
                         </div>
                         <div className="simple-card__list pt-xl-4 pt-3 px-xl-4 me-0">
                             {this.state.newFolder != null && (
-                                <div className="simple-card__group">
-                                    <div className={classNames("simple-card__group-header", {'simple-card__group-header--selected': this.state.newFolder.error})}>
-                                        <div className="d-flex flex-row flex-grow-1 align-items-center gap-2 ps-1">
-                                            <i className="icon--folder icon--small"></i>
-                                            <input type="text"
-                                                aria-label={gettext("Folder name")}
-                                                className="form-control form-control--small"
-                                                maxLength="30"
-                                                placeholder={gettext("My New folder")}
-                                                value={this.state.newFolder.name}
-                                                onChange={(event) => {
-                                                    this.setState({newFolder: {name: event.target.value || ''}});
-                                                }}
-                                            />
-                                            <button type="button"
-                                                className="icon-button icon-button--secondary icon-button--bordered icon-button--small"
-                                                aria-label={gettext("Cancel")}
-                                                title={gettext("Cancel")}
-                                                onClick={() => {
-                                                    this.setState({newFolder: null})
-                                                }}><i className="icon--close-thin"></i></button>
-                                            <button type="button"
-                                                className="icon-button icon-button--primary icon-button--bordered icon-button--small"
-                                                aria-label={gettext("Save")}
-                                                title={gettext("Save")}
-                                                onClick={() => {
-                                                    this.saveNewFolder();
-                                                }}><i className="icon--check"></i></button>
-                                        </div>
-                                    </div>
-                                    <div className="simple-card__group-content"></div>
-                                </div>
+                                <TopicFolderEditor
+                                    folder={this.state.newFolder}
+                                    error={this.state.newFolder.error}
+                                    onSave={this.saveNewFolder}
+                                    onCancel={() => this.setState({newFolder: null})}
+                                />
                             )}
 
                             <TopicList

@@ -1,7 +1,8 @@
-from bson import ObjectId
 import newsroom
-from newsroom.utils import set_original_creator, set_version_creator
 import superdesk
+
+from bson import ObjectId
+from newsroom.utils import set_original_creator, set_version_creator
 
 
 class TopicsResource(newsroom.Resource):
