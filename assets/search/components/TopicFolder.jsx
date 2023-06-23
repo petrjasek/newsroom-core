@@ -26,7 +26,10 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
             id: 'delete',
             name: gettext("Delete"),
             icon: 'trash',
-            callback: () => console.info("DELETE", folder),
+            callback: () => {
+                deleteFolder(folder);
+                toggleFolderPopover(folder);
+            },
         },
     ];
 

@@ -288,7 +288,7 @@ const mapDispatchToProps = (dispatch) => ({
     saveFolder: (folder, data) => dispatch(saveFolder(folder, data)),
     fetchUserFolders: () => dispatch(fetchUserFolders()),
     moveTopic: (topicId, folder) => dispatch(moveTopic(topicId, folder)),
-    deleteFolder,
+    deleteFolder: (folder) => dispatch(deleteFolder(folder)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FollowedTopics);

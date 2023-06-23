@@ -259,9 +259,18 @@ export function saveFolder(folder, data) {
     };
 }
 
+export const FOLDER_DELETED = 'FOLDER_DELETED';
 export function deleteFolder(folder, deleteTopics) {
     return (dispatch, getState) => {
-        console.info("DELETE FOLDER", folder, deleteTopics);
+        const state = getState();
+        const url = getFoldersUrl(state, folder._id);
+
+        if (!window.confirm(gettext("Are you sure you want to delete folder?"))) {
+            return;
+        }
+
+        return server.del(url, null, folder._etag)
+            .then(() => dispatch({type: FOLDER_DELETED, payload: {folder}}));
     };
 }
 
@@ -293,7 +302,7 @@ export function moveTopic(topicId, folder) {
 
         server.patch(url, updates, topic._etag).then((response) => {
             mergeUpdates(updates, response);
-            dispatch({type: TOPIC_UPDATED, updates});
+            dispatch({type: TOPIC_UPDATED, payload: {topic, updates}});
         });
     }
 }

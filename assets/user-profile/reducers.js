@@ -11,6 +11,7 @@ import {
     RECIEVE_USER_FOLDERS,
     TOPIC_UPDATED,
     FOLDER_UPDATED,
+    FOLDER_DELETED,
 } from './actions';
 
 import {RENDER_MODAL, CLOSE_MODAL, MODAL_FORM_VALID, MODAL_FORM_INVALID, ADD_EDIT_USERS} from 'actions';
@@ -204,11 +205,11 @@ export default function itemReducer(state = initialState, action) {
         return {
             ...state,
             topics: state.topics.map((topic) => {
-                if (topic._id === action.payload._id) {
-                    return {...topic, ...action.payload};
+                if (topic._id !== action.payload.topic._id) {
+                    return topic;
                 }
 
-                return topic;
+                return {...topic, ...action.payload.updates};
             }),
         };
     
@@ -222,6 +223,12 @@ export default function itemReducer(state = initialState, action) {
 
                 return {...folder, ...action.payload.updates};
             }),
+        };
+    
+    case FOLDER_DELETED:
+        return {
+            ...state,
+            folders: state.folders.filter((folder) => folder._id !== action.payload.folder._id),
         };
 
     default:
