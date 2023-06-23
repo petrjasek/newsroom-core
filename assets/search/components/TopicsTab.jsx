@@ -11,10 +11,11 @@ import {loadMyAgendaTopic} from 'agenda/actions';
 import {CollapseBoxWithButton} from '../../ui/components/Collapse';
 import {TopicItem} from './TopicItem';
 import {globalTopicsEnabledSelector} from 'ui/selectors';
+import { SidebarFolder } from '../../components/SidebarFolder';
 
 const manageTopics = () => document.dispatchEvent(new Event('manage_topics'));
 
-function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNewItems, globalTopicsEnabled}) {
+function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNewItems, globalTopicsEnabled, userFolders, companyFolders}) {
     const clickTopic = (event, topic) => {
         event.preventDefault();
         removeNewItems(topic._id);
@@ -26,10 +27,6 @@ function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNew
         manageTopics();
     };
 
-    const topicClass = (topic) => (
-        `btn w-100 btn-outline-${topic._id === activeTopicId ? 'primary' : 'secondary'}`
-    );
-
     const activeTopicId = activeTopic ? activeTopic._id : null;
     const personalTopics = (topics || []).filter(
         (topic) => !topic.is_global
@@ -40,56 +37,47 @@ function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNew
 
     const tabName = gettext('{{ section }} Topics', {section: isWireContext() ? sectionNames.wire : sectionNames.agenda});
 
-    return !globalTopicsEnabled ? (
-        <React.Fragment>
-            {!personalTopics.length ? (
-                <div className='wire-column__info mb-3'>
-                    {gettext('No {{name}} created.', {name: tabName})}
-                </div>
-            ) : (
-                <div className="my-3">
-                    {personalTopics.map((topic) => (
-                        <TopicItem
-                            key={topic._id}
-                            topic={topic}
-                            newItemsByTopic={newItemsByTopic}
-                            onClick={clickTopic}
-                            className={topicClass(topic)}
-                        />
-                    ))}
-                </div>
-            )}
-            <FilterButton
-                label={gettext('Manage my {{name}}', {name: tabName})}
-                onClick={clickManage}
-                className='filter-button--border'
-                primary={true}
-            />
-        </React.Fragment>
-    ) : (
-        <React.Fragment>
-            <div className='tab-pane__inner'>
+    const renderTopic = (topic) => (
+        <TopicItem key={topic._id}
+            topic={topic}
+            isActive={topic._id === activeTopicId}
+            newItems={newItemsByTopic && newItemsByTopic[topic._id] ? newItemsByTopic[topic._id].length : 0}
+            onClick={clickTopic}
+        />
+    );
+
+    const renderFolder = (folder) => {
+        const folderTopics = personalTopics.filter((topic) => topic.folder === folder._id);
+
+        if (folderTopics.length === 0) {
+            return null;
+        }
+
+        return (
+            <SidebarFolder key={folder._id} folder={folder}>
+                {folderTopics.map(renderTopic)}
+            </SidebarFolder>
+        );
+    };
+
+    return (
+        <div className="tab-pane__inner">
+            <div className="tab-content">
                 <CollapseBoxWithButton
                     id="my-topics"
                     buttonText={gettext('My Topics')}
                     initiallyOpen={true}
+                    edit={clickManage}
                 >
+                    {userFolders.map(renderFolder)}
                     {!personalTopics.length ? (
                         <div className='wire-column__info mb-4'>
                             {gettext('No {{name}} created.', {name: tabName})}
                         </div>
                     ) : (
-                        <div className="mb-3">
-                            {personalTopics.map((topic) => (
-                                <TopicItem
-                                    key={topic._id}
-                                    topic={topic}
-                                    newItemsByTopic={newItemsByTopic}
-                                    onClick={clickTopic}
-                                    className={topicClass(topic)}
-                                />
-                            ))}
-                        </div>
+                        <ul className="topic-list topic-list--unsorted">
+                            {personalTopics.filter((topic) => topic.folder == null).map(renderTopic)}
+                        </ul>
                     )}
                 </CollapseBoxWithButton>
                 <CollapseBoxWithButton
@@ -97,32 +85,19 @@ function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNew
                     buttonText={gettext('Company Topics')}
                     initiallyOpen={true}
                 >
+                    {companyFolders.map(renderFolder)}
                     {!globalTopics.length ? (
                         <div className='wire-column__info mb-4'>
                             {gettext('No {{name}} created.', {name: tabName})}
                         </div>
                     ) : (
-                        <div className="mb-3">
-                            {globalTopics.map((topic) => (
-                                <TopicItem
-                                    key={topic._id}
-                                    topic={topic}
-                                    newItemsByTopic={newItemsByTopic}
-                                    onClick={clickTopic}
-                                    className={topicClass(topic)}
-                                />
-                            ))}
-                        </div>
+                        <ul className="topic-list topic-list--unsorted">
+                            {globalTopics.map(renderTopic)}
+                        </ul>
                     )}
                 </CollapseBoxWithButton>
             </div>
-            <FilterButton
-                label={gettext('Manage my {{name}}', {name: tabName})}
-                onClick={clickManage}
-                className='filter-button--border'
-                primary={true}
-            />
-        </React.Fragment>
+        </div>
     );
 }
 
@@ -138,6 +113,8 @@ TopicsTab.propTypes = {
 
 const mapStateToProps = (state) => ({
     topics: state.topics || [],
+    userFolders: state.userFolders,
+    companyFolders: state.companyFolders,
     newItemsByTopic: state.newItemsByTopic,
     globalTopicsEnabled: globalTopicsEnabledSelector(state),
 });

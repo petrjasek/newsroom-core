@@ -52,7 +52,7 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
             {editing ? (
                 <TopicFolderEditor 
                     folder={folder}
-                    error={editing === EDITING_ERROR}
+                    error={editing === EDITING_ERROR ? {} : null}
                     onSave={(name) => {
                         saveFolder(folder, {name})
                             .then(() => setEditing(EDITING_OFF), (reason) => setEditing(EDITING_ERROR));

@@ -1,4 +1,5 @@
 import newsroom
+import superdesk
 
 from . import topics
 
