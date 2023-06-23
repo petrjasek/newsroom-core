@@ -5,7 +5,6 @@ import {store as userProfileStore} from './store';
 import {getLocale} from '../utils';
 import {reloadMyTopics as reloadMyAgendaTopics} from '../agenda/actions';
 import {reloadMyTopics as reloadMyWireTopics} from '../wire/actions';
-import { patch } from 'fetch-mock';
 
 export const GET_TOPICS = 'GET_TOPICS';
 export function getTopics(topics) {
@@ -222,19 +221,47 @@ export function pushNotification(push) {
     };
 }
 
-const getFoldersUrl = (state) => `/api/users/${state.user._id}/topic_folders`;
+function getFoldersUrl(state, id) {
+    const foldersUrl = `/api/users/${state.user._id}/topic_folders`;
 
-export function saveNewFolder(name) {
+    return id != null ? `${foldersUrl}/${id}` : foldersUrl;
+}
+
+function mergeUpdates(updates, response) {
+    updates._id = response._id;
+    updates._etag = response._etag;
+    updates._status = response._status;
+    updates._updated = response._updated;
+}
+
+export const FOLDER_UPDATED = 'FOLDER_UPDATED';
+export function saveFolder(folder, data) {
     return (dispatch, getState) => {
         const state = getState();
-        const url = getFoldersUrl(state);
-        return server.post(url, {
-            name: name,
-            section: state.selectedMenu === "events" ? "agenda" : "wire",
-        })
-            .then(() => {
-                dispatch(fetchUserFolders());
-            });
+        const url = getFoldersUrl(state, folder._id);
+
+        if (folder._etag) {
+            const updates = {...data};
+
+            return server.patch(url, updates, folder._etag)
+                .then((response) => {
+                    mergeUpdates(updates, response);
+                    dispatch({type: FOLDER_UPDATED, payload: {folder, updates}});
+                });
+        } else {
+            const payload = {...data, section: state.selectedMenu === "events" ? "agenda" : "wire"};
+
+            return server.post(url, payload)
+                .then(() => {
+                    dispatch(fetchUserFolders());
+                });
+        }
+    };
+}
+
+export function deleteFolder(folder, deleteTopics) {
+    return (dispatch, getState) => {
+        console.info("DELETE FOLDER", folder, deleteTopics);
     };
 }
 
@@ -265,10 +292,8 @@ export function moveTopic(topicId, folder) {
         const url = `/api/users/${state.user._id}/topics/${topicId}`;
 
         server.patch(url, updates, topic._etag).then((response) => {
-            updates._id = response._id;
-            updates._etag = response._etag;
-            updates._updated = response._updated;
-            dispatch({type: TOPIC_UPDATED, payload: updates});
+            mergeUpdates(updates, response);
+            dispatch({type: TOPIC_UPDATED, updates});
         });
     }
 }

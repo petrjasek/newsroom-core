@@ -6,7 +6,7 @@ import {get} from 'lodash';
 import {Topic} from './Topic';
 import {TopicFolder} from './TopicFolder';
 
-const TopicList = ({topics, selectedTopicId, actions, users, folders, folderPopover, toggleFolderPopover, moveTopic}) => {
+const TopicList = ({topics, selectedTopicId, actions, users, folders, folderPopover, toggleFolderPopover, moveTopic, saveFolder, deleteFolder}) => {
 
     if (get(topics, 'length', 0) < 0 && get(folders, 'length', 0) < 0) {
         return null;
@@ -25,6 +25,8 @@ const TopicList = ({topics, selectedTopicId, actions, users, folders, folderPopo
                 folderPopover={folderPopover}
                 toggleFolderPopover={toggleFolderPopover}
                 moveTopic={moveTopic}
+                saveFolder={saveFolder}
+                deleteFolder={deleteFolder}
             >
                 {filteredTopics.map(renderTopic)}
             </TopicFolder>
@@ -51,6 +53,8 @@ TopicList.propTypes = {
     folderPopover: PropTypes.string,
     toggleFolderPopover: PropTypes.func,
     moveTopic: PropTypes.func,
+    saveFolder: PropTypes.func,
+    deleteFolder: PropTypes.func,
 };
 
 export default TopicList;

@@ -10,6 +10,7 @@ import {
     SET_TOPIC_EDITOR_FULLSCREEN,
     RECIEVE_USER_FOLDERS,
     TOPIC_UPDATED,
+    FOLDER_UPDATED,
 } from './actions';
 
 import {RENDER_MODAL, CLOSE_MODAL, MODAL_FORM_VALID, MODAL_FORM_INVALID, ADD_EDIT_USERS} from 'actions';
@@ -208,6 +209,18 @@ export default function itemReducer(state = initialState, action) {
                 }
 
                 return topic;
+            }),
+        };
+    
+    case FOLDER_UPDATED:
+        return {
+            ...state,
+            folders: state.folders.map((folder) => {
+                if (folder._id !== action.payload.folder._id) {
+                    return folder;
+                }
+
+                return {...folder, ...action.payload.updates};
             }),
         };
 

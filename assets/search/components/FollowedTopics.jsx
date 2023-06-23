@@ -15,7 +15,8 @@ import {
     shareTopic,
     deleteTopic,
     selectMenuItem,
-    saveNewFolder,
+    saveFolder,
+    deleteFolder,
     fetchUserFolders,
     moveTopic,
 } from 'user-profile/actions';
@@ -43,7 +44,7 @@ class FollowedTopics extends React.Component {
         this.onTopicChanged = this.onTopicChanged.bind(this);
         this.toggleGlobal = this.toggleGlobal.bind(this);
         this.toggleFolderPopover = this.toggleFolderPopover.bind(this);
-        this.saveNewFolder = this.saveNewFolder.bind(this);
+        this.saveFolder = this.saveFolder.bind(this);
 
         this.state = {showGlobal: false, newFolder: null, folderPopover: null};
 
@@ -139,8 +140,8 @@ class FollowedTopics extends React.Component {
         this.setState({newFolder: {}, folderPopover: null});
     }
 
-    saveNewFolder(name) {
-        this.props.saveNewFolder(name).then(() => {
+    saveFolder(folder, changes) {
+        this.props.saveFolder(folder, changes).then(() => {
             this.setState({newFolder: null});
         }, (reason) => {
             this.setState({newFolder: {error: reason}})
@@ -196,14 +197,15 @@ class FollowedTopics extends React.Component {
                         </div>
                         <div className="simple-card__list pt-xl-4 pt-3 px-xl-4 me-0">
                             {this.state.newFolder != null && (
-                                <TopicFolderEditor
-                                    folder={this.state.newFolder}
-                                    error={this.state.newFolder.error}
-                                    onSave={this.saveNewFolder}
-                                    onCancel={() => this.setState({newFolder: null})}
-                                />
+                                <div className="simple-card__group">
+                                    <TopicFolderEditor
+                                        folder={this.state.newFolder}
+                                        error={this.state.newFolder.error}
+                                        onSave={(name) => this.saveFolder(this.state.newFolder, {name})}
+                                        onCancel={() => this.setState({newFolder: null})}
+                                    />
+                                </div>
                             )}
-
                             <TopicList
                                 topics={this.getFilteredTopics()}
                                 selectedTopicId={get(this.props.selectedItem, '_id')}
@@ -213,6 +215,8 @@ class FollowedTopics extends React.Component {
                                 folderPopover={this.state.folderPopover}
                                 toggleFolderPopover={this.toggleFolderPopover}
                                 moveTopic={this.props.moveTopic}
+                                saveFolder={this.props.saveFolder}
+                                deleteFolder={this.props.deleteFolder}
                             />
                         </div>
                     </div>
@@ -281,9 +285,10 @@ const mapDispatchToProps = (dispatch) => ({
     deleteTopic: (topic) => dispatch(deleteTopic(topic)),
     selectMenuItem: (item) => dispatch(selectMenuItem(item)),
     fetchCompanyUsers: (companyId) => dispatch(fetchCompanyUsers(companyId, true)),
-    saveNewFolder: (name) => dispatch(saveNewFolder(name)),
+    saveFolder: (folder, data) => dispatch(saveFolder(folder, data)),
     fetchUserFolders: () => dispatch(fetchUserFolders()),
     moveTopic: (topicId, folder) => dispatch(moveTopic(topicId, folder)),
+    deleteFolder,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FollowedTopics);
