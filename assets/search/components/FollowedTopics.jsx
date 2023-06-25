@@ -17,7 +17,7 @@ import {
     selectMenuItem,
     saveFolder,
     deleteFolder,
-    fetchUserFolders,
+    fetchFolders,
     moveTopic,
 } from 'user-profile/actions';
 
@@ -81,7 +81,7 @@ class FollowedTopics extends React.Component {
         }
 
         if (this.props.user) {
-            this.props.fetchUserFolders();
+            this.props.fetchFolders();
         }
     }
 
@@ -134,6 +134,7 @@ class FollowedTopics extends React.Component {
 
     toggleGlobal() {
         this.setState((previousState) => ({showGlobal: !previousState.showGlobal}));
+        this.props.fetchFolders(!this.state.showGlobal); // state change will only happen later
     }
 
     createNewFolder() {
@@ -141,7 +142,7 @@ class FollowedTopics extends React.Component {
     }
 
     saveFolder(folder, changes) {
-        this.props.saveFolder(folder, changes).then(() => {
+        this.props.saveFolder(folder, changes, this.state.showGlobal).then(() => {
             this.setState({newFolder: null});
         }, (reason) => {
             this.setState({newFolder: {error: reason}})
@@ -259,7 +260,7 @@ FollowedTopics.propTypes = {
     fetchCompanyUsers: PropTypes.func,
     companyUsers: PropTypes.array,
     saveNewFolder: PropTypes.func,
-    fetchUserFolders: PropTypes.func,
+    fetchFolders: PropTypes.func,
     folders: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
         section: PropTypes.string.isRequired,
@@ -285,8 +286,8 @@ const mapDispatchToProps = (dispatch) => ({
     deleteTopic: (topic) => dispatch(deleteTopic(topic)),
     selectMenuItem: (item) => dispatch(selectMenuItem(item)),
     fetchCompanyUsers: (companyId) => dispatch(fetchCompanyUsers(companyId, true)),
-    saveFolder: (folder, data) => dispatch(saveFolder(folder, data)),
-    fetchUserFolders: () => dispatch(fetchUserFolders()),
+    saveFolder: (folder, data, global) => dispatch(saveFolder(folder, data, global)),
+    fetchFolders: (global) => dispatch(fetchFolders(global)),
     moveTopic: (topicId, folder) => dispatch(moveTopic(topicId, folder)),
     deleteFolder: (folder) => dispatch(deleteFolder(folder)),
 });

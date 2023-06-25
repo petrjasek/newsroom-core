@@ -8,7 +8,7 @@ import {
     SELECT_MENU_ITEM,
     SELECT_PROFILE_MENU,
     SET_TOPIC_EDITOR_FULLSCREEN,
-    RECIEVE_USER_FOLDERS,
+    RECIEVE_FOLDERS,
     TOPIC_UPDATED,
     FOLDER_UPDATED,
     FOLDER_DELETED,
@@ -195,12 +195,12 @@ export default function itemReducer(state = initialState, action) {
         };
     }
 
-    case RECIEVE_USER_FOLDERS:
+    case RECIEVE_FOLDERS:
         return {
             ...state,
             folders: action.payload,
         };
-    
+ 
     case TOPIC_UPDATED:
         return {
             ...state,

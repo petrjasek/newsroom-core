@@ -221,10 +221,18 @@ export function pushNotification(push) {
     };
 }
 
-function getFoldersUrl(state, id) {
-    const foldersUrl = `/api/users/${state.user._id}/topic_folders`;
+function getUserFoldersUrl(state, id) {
+    const baseUrl = `/api/users/${state.user._id}/topic_folders`;
 
-    return id != null ? `${foldersUrl}/${id}` : foldersUrl;
+    return id != null ? `${baseUrl}/${id}` : baseUrl;
+}
+
+function getFoldersUrl(state, global, id) {
+    const baseUrl = global ?
+        `/api/companies/${state.company}/topic_folders` :
+        `/api/users/${state.user._id}/topic_folders`;
+
+    return id != null ? `${baseUrl}/${id}` : baseUrl;
 }
 
 function mergeUpdates(updates, response) {
@@ -235,10 +243,10 @@ function mergeUpdates(updates, response) {
 }
 
 export const FOLDER_UPDATED = 'FOLDER_UPDATED';
-export function saveFolder(folder, data) {
+export function saveFolder(folder, data, global) {
     return (dispatch, getState) => {
         const state = getState();
-        const url = getFoldersUrl(state, folder._id);
+        const url = getFoldersUrl(state, global, folder._id);
 
         if (folder._etag) {
             const updates = {...data};
@@ -253,7 +261,7 @@ export function saveFolder(folder, data) {
 
             return server.post(url, payload)
                 .then(() => {
-                    dispatch(fetchUserFolders());
+                    dispatch(fetchFolders(global));
                 });
         }
     };
@@ -263,7 +271,7 @@ export const FOLDER_DELETED = 'FOLDER_DELETED';
 export function deleteFolder(folder, deleteTopics) {
     return (dispatch, getState) => {
         const state = getState();
-        const url = getFoldersUrl(state, folder._id);
+        const url = getUserFoldersUrl(state, folder._id);
 
         if (!window.confirm(gettext("Are you sure you want to delete folder?"))) {
             return;
@@ -274,14 +282,29 @@ export function deleteFolder(folder, deleteTopics) {
     };
 }
 
-export const RECIEVE_USER_FOLDERS = 'RECIEVE_USER_FOLDERS';
+export const RECIEVE_FOLDERS = 'RECIEVE_FOLDERS';
+
 export function fetchUserFolders() {
     return (dispatch, getState) => {
         const state = getState();
-        const url = getFoldersUrl(state);
+        const url = getUserFoldersUrl(state);
 
         return server.get(url).then((res) => {
-            dispatch({type: RECIEVE_USER_FOLDERS, payload: res._items});
+            dispatch({type: RECIEVE_FOLDERS, payload: res._items});
+        }, (reason) => {
+            console.error(reason);
+            return Promise.reject();
+        });
+    };
+}
+
+export function fetchFolders(global) {
+    return (dispatch, getState) => {
+        const state = getState();
+        const url = getFoldersUrl(state, global);
+
+        return server.get(url).then((res) => {
+            dispatch({type: RECIEVE_FOLDERS, payload: res._items});
         }, (reason) => {
             console.error(reason);
             return Promise.reject();

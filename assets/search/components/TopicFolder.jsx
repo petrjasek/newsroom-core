@@ -76,7 +76,10 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
                         <i className="icon--folder"></i>
                         <span className="simple-card__group-header-name">{folder.name}</span>
                     </div>
-                    <span className="badge badge--neutral rounded-pill me-2">{topics.length}</span>
+                    <span className={classNames("badge rounded-pill me-2", {
+                        "badge--neutral": topics.length > 0,
+                        "badge--neutral-translucent": topics.length === 0,
+                    })}>{topics.length}</span>
                     <div className="simple-card__group-header-actions">
                         <button
                             ref={buttonRef}
