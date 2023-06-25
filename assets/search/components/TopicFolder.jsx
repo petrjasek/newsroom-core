@@ -11,9 +11,8 @@ const EDITING_ERROR = 2;
 
 export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover, moveTopic, saveFolder, deleteFolder, children}) {
     const [opened, setOpened] = useState(false);
-    const [popover, togglePopover] = useState(false);
-    const [dragover, setDragOver] = useState(false);
     const [editing, setEditing] = useState(EDITING_OFF);
+    const [dragover, setDragOver] = useState(false);
     const buttonRef = useRef(null);
     const actions = [
         {
@@ -46,6 +45,7 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
             onDrop={(event) => {
                 const topic = event.dataTransfer.getData("topic");
 
+                setDragOver(false);
                 moveTopic(topic, folder);
             }}
         >
@@ -96,16 +96,16 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
                                 className="action-popover"
                                 delay={0}
                                 fade={false}
-                                toggle={(event) => {
-                                    togglePopover(!popover);
-                                }}
                             >
                                 <PopoverBody>
                                     {actions.map((action) => (
                                         <button key={action.id}
                                             type="button"
                                             className="dropdown-item"
-                                            onClick={() => action.callback()}
+                                            onClick={() => {
+                                                toggleFolderPopover(folder);
+                                                action.callback();
+                                            }}
                                         >
                                             <i className={"icon--" + action.icon} />
                                             {action.name}

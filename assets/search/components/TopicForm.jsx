@@ -13,6 +13,12 @@ import {FormSection} from 'components/FormSection';
 
 const TOPIC_NAME_MAXLENGTH = 30;
 
+const getFolderName = (topic, folders) => {
+    const folder = topic.folder ? folders.find((folder) => folder._id == topic.folder) : null;
+
+    return folder ? folder.name : gettext("Add to folder");
+}
+
 const TopicForm = ({original, topic, save, onChange, globalTopicsEnabled, onSubscribeChanged, readOnly, folders, onFolderChange}) => (
     <div>
         <form onSubmit={save}>
@@ -82,7 +88,7 @@ const TopicForm = ({original, topic, save, onChange, globalTopicsEnabled, onSubs
                         <div className="nh-container nh-container--direction-row mb-3 pt-2 pb-3">
                             <Dropdown small={true}
                                 icon={'icon--folder'}
-                                label={(topic.folder) ? folders.find((folder) => folder._id == topic.folder).name : gettext("Add to folder")}
+                                label={getFolderName(topic, folders)}
                             >
                                 {folders.map((folder) => (
                                     <button key={folder._id}

@@ -13,7 +13,7 @@ import TopicParameters from './TopicParameters';
 import {fetchNavigations} from 'navigations/actions';
 import {submitFollowTopic as submitWireFollowTopic, subscribeToTopic, unsubscribeToTopic} from 'search/actions';
 import {submitFollowTopic as submitProfileFollowTopic, hideModal, setTopicEditorFullscreen} from 'user-profile/actions';
-import {topicEditorFullscreenSelector} from 'user-profile/selectors';
+import {topicEditorFullscreenSelector, foldersSelector} from 'user-profile/selectors';
 import {loadMyWireTopic} from 'wire/actions';
 import {loadMyAgendaTopic} from 'agenda/actions';
 import EditPanel from 'components/EditPanel';
@@ -361,7 +361,7 @@ const mapStateToProps = (state) => ({
     navigations: state.navigations || [],
     editorFullscreen: topicEditorFullscreenSelector(state),
     companyUsers: state.monitoringProfileUsers || [],
-    folders: state.folders,
+    folders: foldersSelector(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

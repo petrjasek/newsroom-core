@@ -26,6 +26,7 @@ import {
     selectedMenuSelector,
     topicEditorFullscreenSelector,
     globalTopicsEnabledSelector,
+    foldersSelector,
 } from 'user-profile/selectors';
 
 import MonitoringEditor from 'search/components/MonitoringEditor';
@@ -143,7 +144,7 @@ class FollowedTopics extends React.Component {
 
     saveFolder(folder, changes) {
         this.props.saveFolder(folder, changes, this.state.showGlobal).then(() => {
-            this.setState({newFolder: null});
+            this.setState({newFolder: null, folderPopover: null});
         }, (reason) => {
             this.setState({newFolder: {error: reason}})
         });
@@ -277,7 +278,7 @@ const mapStateToProps = (state, ownProps) => ({
     editorFullscreen: topicEditorFullscreenSelector(state),
     globalTopicsEnabled: globalTopicsEnabledSelector(state, ownProps.topicType),
     companyUsers: state.monitoringProfileUsers || [],
-    folders: state.folders.filter((folder) => state.selectedMenu === "events" ? folder.section === "agenda" : folder.section === "wire"),
+    folders: foldersSelector(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

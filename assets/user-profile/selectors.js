@@ -7,6 +7,9 @@ export const selectedItemSelector = (state) => get(state, 'selectedItem');
 export const displayModelSelector = (state) => get(state, 'displayModal');
 export const userSectionsSelector = (state) => get(state, 'userSections');
 export const topicEditorFullscreenSelector = (state) => get(state, 'editorFullscreen') || false;
+export const foldersSelector = (state) => state.folders.filter(
+    (folder) => state.selectedMenu === "events" ? folder.section === "agenda" : folder.section === "wire"
+);
 
 export const uiContextConfigSelector = (state, context) => get(state, `uiConfigs.${context}`) || {};
 export const globalTopicsEnabledSelector = (state, context) => context === 'monitoring' ? false : get(

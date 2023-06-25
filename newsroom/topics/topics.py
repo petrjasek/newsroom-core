@@ -9,6 +9,7 @@ class TopicsResource(newsroom.Resource):
     url = 'users/<regex("[a-f0-9]{24}"):user>/topics'
     resource_methods = ["GET", "POST"]
     item_methods = ["GET", "PATCH", "DELETE"]
+    collation = True
     schema = {
         "label": {"type": "string", "required": True},
         "query": {"type": "string", "nullable": True},

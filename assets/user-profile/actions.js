@@ -252,9 +252,8 @@ export function saveFolder(folder, data, global) {
             const updates = {...data};
 
             return server.patch(url, updates, folder._etag)
-                .then((response) => {
-                    mergeUpdates(updates, response);
-                    dispatch({type: FOLDER_UPDATED, payload: {folder, updates}});
+                .then(() => {
+                    dispatch(fetchFolders(global, true));
                 });
         } else {
             const payload = {...data, section: state.selectedMenu === "events" ? "agenda" : "wire"};
@@ -298,10 +297,14 @@ export function fetchUserFolders() {
     };
 }
 
-export function fetchFolders(global) {
+/**
+ * @param {bool} global - fetch company or user folders
+ * @param {bool} force  - force refresh via adding timestamp to url
+ */
+export function fetchFolders(global, force) {
     return (dispatch, getState) => {
         const state = getState();
-        const url = getFoldersUrl(state, global);
+        const url = getFoldersUrl(state, global) + (force ? `?time=${Date.now()}` : '');
 
         return server.get(url).then((res) => {
             dispatch({type: RECIEVE_FOLDERS, payload: res._items});
