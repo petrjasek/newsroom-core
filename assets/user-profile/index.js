@@ -19,4 +19,4 @@ document.addEventListener('manage_topics', function () {
 
 initWebSocket(store, pushNotification);
 
-store.dispatch(selectMenu('topics'));
+//store.dispatch(selectMenu('topics'));

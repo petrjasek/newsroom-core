@@ -46,8 +46,26 @@ function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNew
         />
     );
 
-    const renderFolder = (folder) => {
-        const folderTopics = personalTopics.filter((topic) => topic.folder === folder._id);
+    const renderTopicsSection = (folders, topics) => {
+        if (topics.length === 0) {
+            return (
+                <div className='wire-column__info mb-4'>
+                    {gettext('No {{name}} created.', {name: tabName})}
+                </div>
+            );
+        }
+
+        return (
+            <React.Fragment>
+                {renderFolders(folders, topics)}
+                {renderFreeTopics(topics)}
+            </React.Fragment>
+        );
+
+    }
+
+    const renderFolders = (folders, topics) => folders.map((folder) => {
+        const folderTopics = topics.filter((topic) => topic.folder === folder._id);
 
         if (folderTopics.length === 0) {
             return null;
@@ -57,6 +75,20 @@ function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNew
             <SidebarFolder key={folder._id} folder={folder}>
                 {folderTopics.map(renderTopic)}
             </SidebarFolder>
+        );
+    });
+
+    const renderFreeTopics = (topics) => {
+        const filtered = topics.filter((topic) => !topic.folder);
+
+        if (filtered.length === 0) {
+            return null;
+        }
+
+        return (
+            <ul className="topic-list topic-list--unsorted">
+                {filtered.map(renderTopic)}
+            </ul>
         );
     };
 
@@ -69,32 +101,14 @@ function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNew
                     initiallyOpen={true}
                     edit={clickManage}
                 >
-                    {userFolders.map(renderFolder)}
-                    {!personalTopics.length ? (
-                        <div className='wire-column__info mb-4'>
-                            {gettext('No {{name}} created.', {name: tabName})}
-                        </div>
-                    ) : (
-                        <ul className="topic-list topic-list--unsorted">
-                            {personalTopics.filter((topic) => topic.folder == null).map(renderTopic)}
-                        </ul>
-                    )}
+                    {renderTopicsSection(userFolders, personalTopics)}
                 </CollapseBoxWithButton>
                 <CollapseBoxWithButton
                     id="company-topics"
                     buttonText={gettext('Company Topics')}
                     initiallyOpen={true}
                 >
-                    {companyFolders.map(renderFolder)}
-                    {!globalTopics.length ? (
-                        <div className='wire-column__info mb-4'>
-                            {gettext('No {{name}} created.', {name: tabName})}
-                        </div>
-                    ) : (
-                        <ul className="topic-list topic-list--unsorted">
-                            {globalTopics.map(renderTopic)}
-                        </ul>
-                    )}
+                    {renderTopicsSection(companyFolders, globalTopics)}
                 </CollapseBoxWithButton>
             </div>
         </div>
@@ -113,8 +127,8 @@ TopicsTab.propTypes = {
 
 const mapStateToProps = (state) => ({
     topics: state.topics || [],
-    userFolders: state.userFolders,
-    companyFolders: state.companyFolders,
+    userFolders: state.userFolders || [],
+    companyFolders: state.companyFolders || [],
     newItemsByTopic: state.newItemsByTopic,
     globalTopicsEnabled: globalTopicsEnabledSelector(state),
 });
