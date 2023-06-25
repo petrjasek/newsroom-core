@@ -85,8 +85,8 @@ def get_view_data():
     company = get_company(user)
     topics = get_user_topics(user["_id"]) if user else []
     company_id = str(user["company"]) if user and user.get("company") else None
-    user_folders = get_user_folders(user) if user else []
-    company_folders = get_company_folders(company) if company else []
+    user_folders = get_user_folders(user, "wire") if user else []
+    company_folders = get_company_folders(company, "wire") if company else []
 
     return {
         "user": user,

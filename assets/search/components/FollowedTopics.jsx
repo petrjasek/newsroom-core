@@ -277,7 +277,7 @@ const mapStateToProps = (state, ownProps) => ({
     editorFullscreen: topicEditorFullscreenSelector(state),
     globalTopicsEnabled: globalTopicsEnabledSelector(state, ownProps.topicType),
     companyUsers: state.monitoringProfileUsers || [],
-    folders: state.folders,
+    folders: state.folders.filter((folder) => state.selectedMenu === "events" ? folder.section === "agenda" : folder.section === "wire"),
 });
 
 const mapDispatchToProps = (dispatch) => ({
