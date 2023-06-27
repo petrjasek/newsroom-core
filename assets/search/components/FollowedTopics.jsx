@@ -46,10 +46,18 @@ class FollowedTopics extends React.Component {
         this.toggleGlobal = this.toggleGlobal.bind(this);
         this.toggleFolderPopover = this.toggleFolderPopover.bind(this);
         this.saveFolder = this.saveFolder.bind(this);
+        this.removeTopicFolder = this.removeTopicFolder.bind(this);
 
         this.state = {showGlobal: false, newFolder: null, folderPopover: null};
 
-        this.actions = [{
+        this.actions = [
+        {
+            id: 'move',
+            name: gettext("Remove from folder"),
+            icon: 'folder-remove',
+            action: this.removeTopicFolder,
+        },
+        {
             id: 'edit',
             name: gettext('Edit'),
             icon: 'edit',
@@ -152,6 +160,10 @@ class FollowedTopics extends React.Component {
 
     toggleFolderPopover(folder) {
         this.setState({folderPopover: !this.state.folderPopover || this.state.folderPopover !== folder._id ? folder._id : null})
+    }
+
+    removeTopicFolder(topic) {
+        this.props.moveTopic(topic._id);
     }
 
     render() {
