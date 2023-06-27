@@ -62,6 +62,10 @@ def update_topic(topic_id):
         "folder": data.get("folder", None),
     }
 
+    if original and updates.get("is_global") != original.get("is_global"):
+        # reset folder when going from company to user and vice versa
+        updates["folder"] = None
+
     response = get_resource_service("topics").patch(id=ObjectId(topic_id), updates=updates)
     if response.get("is_global") or updates.get("is_global", False) != original.get("is_global", False):
         push_company_notification("topics")
