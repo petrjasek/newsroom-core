@@ -40,7 +40,6 @@ import BaseApp from 'layout/components/BaseApp';
 import WirePreview from './WirePreview';
 import ItemsList from './ItemsList';
 import SearchBar from 'search/components/SearchBar';
-import SearchResultsInfo from 'search/components/SearchResultsInfo';
 import SearchSidebar from './SearchSidebar';
 import SelectedItemsBar from './SelectedItemsBar';
 import ListViewControls from './ListViewControls';
@@ -52,6 +51,9 @@ import getItemActions from '../item-actions';
 import BookmarkTabs from 'components/BookmarkTabs';
 import ItemStatisticsModal from './ItemStatisticsModal';
 import {AdvancedSearchPanel} from 'search/components/AdvancedSearchPanel';
+import {SearchTipsPanel} from 'search/components/SearchTipsPanel';
+
+import {SearchResultsBar} from 'search/components/SearchResultsBar';
 
 import {
     previewConfigSelector,
@@ -82,10 +84,17 @@ class WireApp extends BaseApp {
 
         this.toggleAdvancedSearchPanel = this.toggleAdvancedSearchPanel.bind(this);
         this.state.isAdvancedSearchShown = false;
+
+        this.toggleSearchTipsPanel = this.toggleSearchTipsPanel.bind(this);
+        this.state.isSearchTipsShown = false;
     }
 
     toggleAdvancedSearchPanel() {
         this.setState((prevState) => ({isAdvancedSearchShown: !prevState.isAdvancedSearchShown}));
+    }
+
+    toggleSearchTipsPanel() {
+        this.setState((prevState) => ({isSearchTipsShown: !prevState.isSearchTipsShown}));
     }
 
     render() {
@@ -102,6 +111,13 @@ class WireApp extends BaseApp {
                     <AdvancedSearchPanel
                         fetchItems={this.props.fetchItems}
                         toggleAdvancedSearchPanel={this.toggleAdvancedSearchPanel}
+                        toggleSearchTipsPanel={this.toggleSearchTipsPanel}
+                    />
+                )}
+                {!this.state.isSearchTipsShown ? null : (
+                    <SearchTipsPanel
+                        toggleSearchTipsPanel={this.toggleSearchTipsPanel}
+                        defaultTab={this.state.isAdvancedSearchShown ? 'advanced' : 'regular'}
                     />
                 )}
             </React.Fragment>
@@ -218,18 +234,7 @@ class WireApp extends BaseApp {
                             fetchItems={this.props.fetchItems}
                             setQuery={this.props.setQuery}
                             toggleAdvancedSearchPanel={this.toggleAdvancedSearchPanel}
-                        />
-
-                        <ListViewControls
-                            activeView={this.props.activeView}
-                            setView={this.props.setView}
-                            activeNavigation={this.props.activeNavigation}
-                            newsOnly={this.props.newsOnly}
-                            toggleNews={this.props.toggleNews}
-                            hideNewsOnly={!(this.props.context === 'wire' && DISPLAY_NEWS_ONLY && newsOnlyFilterText)}
-                            hideSearchAllVersions={!(this.props.context === 'wire' && DISPLAY_ALL_VERSIONS_TOGGLE)}
-                            searchAllVersions={this.props.searchAllVersions}
-                            toggleSearchAllVersions={this.props.toggleSearchAllVersions}
+                            toggleSearchTipsPanel={this.toggleSearchTipsPanel}
                         />
                     </nav>
                 </section>,
@@ -244,7 +249,7 @@ class WireApp extends BaseApp {
                         <div className={mainClassName}
                             ref={this.setListRef}
                         >
-                            <SearchResultsInfo
+                            <SearchResultsBar
                                 minimizeSearchResults={this.state.minimizeSearchResults}
 
                                 showTotalItems={showTotalItems}
@@ -260,7 +265,21 @@ class WireApp extends BaseApp {
 
                                 newItems={this.props.newItems}
                                 refresh={this.props.fetchItems}
-                            />
+
+                                setQuery={this.props.setQuery}
+                            >
+                                <ListViewControls
+                                    activeView={this.props.activeView}
+                                    setView={this.props.setView}
+                                    activeNavigation={this.props.activeNavigation}
+                                    newsOnly={this.props.newsOnly}
+                                    toggleNews={this.props.toggleNews}
+                                    hideNewsOnly={!(this.props.context === 'wire' && DISPLAY_NEWS_ONLY && newsOnlyFilterText)}
+                                    hideSearchAllVersions={!(this.props.context === 'wire' && DISPLAY_ALL_VERSIONS_TOGGLE)}
+                                    searchAllVersions={this.props.searchAllVersions}
+                                    toggleSearchAllVersions={this.props.toggleSearchAllVersions}
+                                />
+                            </SearchResultsBar>
 
                             <ItemsList
                                 actions={this.props.actions}

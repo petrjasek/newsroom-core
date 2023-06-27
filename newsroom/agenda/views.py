@@ -31,7 +31,7 @@ from newsroom.agenda.email import send_coverage_request_email
 from newsroom.agenda.utils import remove_fields_for_public_user, remove_restricted_coverage_info
 from newsroom.companies.utils import restrict_coverage_info
 from newsroom.notifications import push_user_notification
-from newsroom.search_config import merge_planning_aggs
+from newsroom.search.config import merge_planning_aggs
 
 
 @blueprint.route("/agenda")
@@ -116,7 +116,7 @@ def get_view_data():
     topics = get_user_topics(user["_id"]) if user else []
     company = get_company(user) or {}
     return {
-        "user": str(user["_id"]) if user else None,
+        "user": user,
         "company": str(user["company"]) if user and user.get("company") else None,
         "topics": [t for t in topics if t.get("topic_type") == "agenda"],
         "formats": [

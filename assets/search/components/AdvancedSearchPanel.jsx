@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import {gettext} from 'utils';
 import {advancedSearchParamsSelector} from '../selectors';
-import {toggleAdvancedSearchField, setAdvancedSearchKeywords, clearAdvanedSearchParams} from '../actions';
+import {toggleAdvancedSearchField, setAdvancedSearchKeywords, clearAdvancedSearchParams} from '../actions';
 
 import CheckboxInput from 'components/CheckboxInput';
 import InputWrapper from 'components/InputWrapper';
@@ -13,6 +13,7 @@ function AdvancedSearchPanelComponent({
     params,
     fetchItems,
     toggleAdvancedSearchPanel,
+    toggleSearchTipsPanel,
     toggleField,
     setKeywords,
     clearParams
@@ -24,6 +25,15 @@ function AdvancedSearchPanelComponent({
                 <nav className="content-bar navbar">
                     <h3>{gettext('Advanced Search')}</h3>
                     <div className="btn-group">
+                        <div className="mx-2">
+                            <button
+                                className="icon-button"
+                                aria-label={gettext('Show Search Tips')}
+                                onClick={toggleSearchTipsPanel}
+                            >
+                                <i className="icon--info" />
+                            </button>
+                        </div>
                         <div className="mx-2">
                             <button
                                 className="icon-button icon-button icon-button--bordered"
@@ -125,7 +135,11 @@ function AdvancedSearchPanelComponent({
             <div className="advanced-search__footer">
                 <button
                     className="nh-button nh-button--secondary"
-                    onClick={clearParams}
+                    onClick={() => {
+                        clearParams();
+                        toggleAdvancedSearchPanel();
+                        fetchItems();
+                    }}
                 >
                     {gettext('Clear all')}
                 </button>
@@ -152,6 +166,7 @@ AdvancedSearchPanelComponent.propTypes = {
     }),
     fetchItems: PropTypes.func,
     toggleAdvancedSearchPanel: PropTypes.func,
+    toggleSearchTipsPanel: PropTypes.func,
     toggleField: PropTypes.func,
     setKeywords: PropTypes.func,
     clearParams: PropTypes.func,
@@ -164,7 +179,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     toggleField: (field) => dispatch(toggleAdvancedSearchField(field)),
     setKeywords: (field, keywords) => dispatch(setAdvancedSearchKeywords(field, keywords)),
-    clearParams: () => dispatch(clearAdvanedSearchParams()),
+    clearParams: () => dispatch(clearAdvancedSearchParams()),
 });
 
 
