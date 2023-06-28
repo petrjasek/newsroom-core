@@ -18,5 +18,3 @@ document.addEventListener('manage_topics', function () {
 }, false);
 
 initWebSocket(store, pushNotification);
-
-store.dispatch(selectMenu('topics'));

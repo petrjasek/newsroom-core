@@ -54,8 +54,9 @@ class FollowedTopics extends React.Component {
         {
             id: 'move',
             name: gettext("Remove from folder"),
-            icon: 'folder-remove',
+            icon: 'folder-remove-from',
             action: this.removeTopicFolder,
+            if: (topic) => topic.folder != null,
         },
         {
             id: 'edit',

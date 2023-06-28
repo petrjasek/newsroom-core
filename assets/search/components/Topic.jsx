@@ -8,7 +8,7 @@ import {ToolTip} from '../../ui/components/ToolTip';
 import AuditInformation from 'components/AuditInformation';
 
 export function Topic({topic, actions, users, selectedTopicId}) {
-    const getActionButtons = (topic) => actions.map(
+    const getActionButtons = (topic) => actions.filter((action) => action.if == null || action.if(topic)).map(
         (action) => (
             <ActionButton
                 key={action.name}

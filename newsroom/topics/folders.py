@@ -16,7 +16,7 @@ class FoldersResource(newsroom.Resource):
         "section": {
             "type": "string",
             "required": True,
-            "allowed": ["wire", "agenda"],
+            "allowed": ["wire", "agenda", "monitoring"],
         },
     }
 
