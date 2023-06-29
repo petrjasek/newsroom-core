@@ -51,19 +51,19 @@ class FollowedTopics extends React.Component {
         this.state = {showGlobal: false, newFolder: null, folderPopover: null};
 
         this.actions = [
-        {
-            id: 'move',
-            name: gettext("Remove from folder"),
-            icon: 'folder-remove-from',
-            action: this.removeTopicFolder,
-            if: (topic) => topic.folder != null,
-        },
-        {
-            id: 'edit',
-            name: gettext('Edit'),
-            icon: 'edit',
-            action: this.editTopic,
-        }];
+            {
+                id: 'move',
+                name: gettext('Remove from folder'),
+                icon: 'folder-remove-from',
+                action: this.removeTopicFolder,
+                if: (topic) => topic.folder != null,
+            },
+            {
+                id: 'edit',
+                name: gettext('Edit'),
+                icon: 'edit',
+                action: this.editTopic,
+            }];
 
         if (this.props.topicType !== 'monitoring') {
             this.actions = [
@@ -155,12 +155,12 @@ class FollowedTopics extends React.Component {
         this.props.saveFolder(folder, changes, this.state.showGlobal).then(() => {
             this.setState({newFolder: null, folderPopover: null});
         }, (reason) => {
-            this.setState({newFolder: {error: reason}})
+            this.setState({newFolder: {error: reason}});
         });
     }
 
     toggleFolderPopover(folder) {
-        this.setState({folderPopover: !this.state.folderPopover || this.state.folderPopover !== folder._id ? folder._id : null})
+        this.setState({folderPopover: !this.state.folderPopover || this.state.folderPopover !== folder._id ? folder._id : null});
     }
 
     removeTopicFolder(topic) {
@@ -273,8 +273,10 @@ FollowedTopics.propTypes = {
     user: PropTypes.object,
     fetchCompanyUsers: PropTypes.func,
     companyUsers: PropTypes.array,
-    saveNewFolder: PropTypes.func,
     fetchFolders: PropTypes.func,
+    moveTopic: PropTypes.func,
+    saveFolder: PropTypes.func,
+    deleteFolder: PropTypes.func,
     folders: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
         section: PropTypes.string.isRequired,

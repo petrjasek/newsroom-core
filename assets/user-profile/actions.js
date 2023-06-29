@@ -256,7 +256,7 @@ export function saveFolder(folder, data, global) {
                     dispatch(fetchFolders(global, true));
                 });
         } else {
-            const payload = {...data, section: state.selectedMenu === "events" ? "agenda" : "wire"};
+            const payload = {...data, section: state.selectedMenu === 'events' ? 'agenda' : 'wire'};
 
             return server.post(url, payload)
                 .then(() => {
@@ -272,11 +272,11 @@ export function deleteFolder(folder, deleteTopics) {
         const state = getState();
         const url = getUserFoldersUrl(state, folder._id);
 
-        if (!window.confirm(gettext("Are you sure you want to delete folder?"))) {
+        if (!window.confirm(gettext('Are you sure you want to delete folder?'))) {
             return;
         }
 
-        return server.del(url, null, folder._etag)
+        return server.del(url, {topics: deleteTopics}, folder._etag)
             .then(() => dispatch({type: FOLDER_DELETED, payload: {folder}}));
     };
 }
@@ -330,5 +330,5 @@ export function moveTopic(topicId, folder) {
             mergeUpdates(updates, response);
             dispatch({type: TOPIC_UPDATED, payload: {topic, updates}});
         });
-    }
+    };
 }

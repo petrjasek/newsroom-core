@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
 
@@ -7,7 +8,7 @@ import ActionButton from 'components/ActionButton';
 import {ToolTip} from '../../ui/components/ToolTip';
 import AuditInformation from 'components/AuditInformation';
 
-export function Topic({topic, actions, users, selectedTopicId}) {
+export function Topic({topic, actions, users, selected}) {
     const getActionButtons = (topic) => actions.filter((action) => action.if == null || action.if(topic)).map(
         (action) => (
             <ActionButton
@@ -27,12 +28,12 @@ export function Topic({topic, actions, users, selectedTopicId}) {
                 className={classNames(
                     'simple-card',
                     'simple-card--draggable',
-                    {'simple-card--selected': selectedTopicId === topic._id}
+                    {'simple-card--selected': selected}
                 )}
                 draggable={true}
                 onDragStart={(event) => {
-                    event.dataTransfer.setData("topic", topic._id);
-                    event.dataTransfer.dropEffect = "move";
+                    event.dataTransfer.setData('topic', topic._id);
+                    event.dataTransfer.dropEffect = 'move';
                 }}
             >
                 <div className="simple-card__header simple-card__header-with-icons">
@@ -77,3 +78,22 @@ export function Topic({topic, actions, users, selectedTopicId}) {
         </div>
     );
 }
+
+Topic.propTypes = {
+    topic: PropTypes.shape({
+        _id: PropTypes.string,
+        name: PropTypes.string,
+        label: PropTypes.string,
+        description: PropTypes.string,
+        is_global: PropTypes.bool,
+        _created: PropTypes.string,
+    }),
+    actions: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+        icon: PropTypes.string,
+        action: PropTypes.func,
+        if: PropTypes.func,
+    })),
+    selected: PropTypes.bool,
+    users: PropTypes.array,
+};

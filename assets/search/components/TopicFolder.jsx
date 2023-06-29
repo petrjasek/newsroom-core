@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {gettext} from 'utils';
 import {Popover, PopoverBody} from 'reactstrap';
 import classNames from 'classnames';
-import { TopicFolderEditor } from './TopicFolderEditor';
+import {TopicFolderEditor} from './TopicFolderEditor';
 
 const EDITING_OFF = 0;
 const EDITING_ON = 1;
@@ -17,13 +17,13 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
     const actions = [
         {
             id: 'edit',
-            name: gettext("Rename"),
+            name: gettext('Rename'),
             icon: 'edit',
             callback: () => setEditing(EDITING_ON),
         },
         {
             id: 'delete',
-            name: gettext("Delete"),
+            name: gettext('Delete'),
             icon: 'trash',
             callback: () => {
                 deleteFolder(folder);
@@ -36,14 +36,14 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
         <div key={folder._id} className="simple-card__group" 
             onDragOver={(event) => {
                 event.preventDefault();
-                event.dataTransfer.dropEffect = "move";
+                event.dataTransfer.dropEffect = 'move';
                 setDragOver(true);
             }}
             onDragLeave={() => {
                 setDragOver(false);
             }}
             onDrop={(event) => {
-                const topic = event.dataTransfer.getData("topic");
+                const topic = event.dataTransfer.getData('topic');
 
                 setDragOver(false);
                 moveTopic(topic, folder);
@@ -55,19 +55,19 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
                     error={editing === EDITING_ERROR ? {} : null}
                     onSave={(name) => {
                         saveFolder(folder, {name})
-                            .then(() => setEditing(EDITING_OFF), (reason) => setEditing(EDITING_ERROR));
+                            .then(() => setEditing(EDITING_OFF), () => setEditing(EDITING_ERROR));
                     }}
                     onCancel={() => setEditing(EDITING_OFF)}
                 />
             ) : (
-                <div className={classNames("simple-card__group-header", {
+                <div className={classNames('simple-card__group-header', {
                     'simple-card__group-header--ondragover': dragover,
                 })}>
                     {opened ? (
-                        <button type="button" className="icon-button icon-button--tertiary" title={gettext("Close")} onClick={() => setOpened(false)}><i className="icon--minus"></i></button>
+                        <button type="button" className="icon-button icon-button--tertiary" title={gettext('Close')} onClick={() => setOpened(false)}><i className="icon--minus"></i></button>
                     ) : (
                         <button type="button" className="icon-button icon-button--tertiary"
-                            title={gettext("Open")}
+                            title={gettext('Open')}
                             onClick={() => setOpened(true)}
                             disabled={topics.length === 0}
                         ><i className="icon--plus"></i></button>
@@ -76,9 +76,9 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
                         <i className="icon--folder"></i>
                         <span className="simple-card__group-header-name">{folder.name}</span>
                     </div>
-                    <span className={classNames("badge rounded-pill me-2", {
-                        "badge--neutral": topics.length > 0,
-                        "badge--neutral-translucent": topics.length === 0,
+                    <span className={classNames('badge rounded-pill me-2', {
+                        'badge--neutral': topics.length > 0,
+                        'badge--neutral-translucent': topics.length === 0,
                     })}>{topics.length}</span>
                     <div className="simple-card__group-header-actions">
                         <button
@@ -90,7 +90,7 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
                         </button>
                         {buttonRef.current && (
                             <Popover
-                                key={"popover-folder-" + folder._id}
+                                key={'popover-folder-' + folder._id}
                                 isOpen={folderPopover === folder._id}
                                 target={buttonRef}
                                 className="action-popover"
@@ -107,7 +107,7 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
                                                 action.callback();
                                             }}
                                         >
-                                            <i className={"icon--" + action.icon} />
+                                            <i className={'icon--' + action.icon} />
                                             {action.name}
                                         </button>
                                     ))}
@@ -118,9 +118,9 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
                 </div>
             )}
             {opened && (
-            <div className="simple-card__group-content">
-                {children}
-            </div>
+                <div className="simple-card__group-content">
+                    {children}
+                </div>
             )}
         </div>
     );
@@ -128,9 +128,14 @@ export function TopicFolder({folder, topics, folderPopover, toggleFolderPopover,
 
 TopicFolder.propTypes = {
     folder: PropTypes.shape({
+        _id: PropTypes.string,
         name: PropTypes.string,
     }),
     topics: PropTypes.array,
     saveFolder: PropTypes.func,
     deleteFolder: PropTypes.func,
+    moveTopic: PropTypes.func,
+    folderPopover: PropTypes.string,
+    toggleFolderPopover: PropTypes.func,
+    children: PropTypes.node,
 };

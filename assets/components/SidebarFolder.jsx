@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import PropTypes from 'prop-types';
 
 export function SidebarFolder({folder, children}) {
     const [open, setOpen] = useState(false);
@@ -19,3 +20,8 @@ export function SidebarFolder({folder, children}) {
         </div>
     );
 }
+
+SidebarFolder.propTypes = {
+    folder: PropTypes.object,
+    children: PropTypes.node,
+};

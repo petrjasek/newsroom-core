@@ -5,17 +5,15 @@ import {connect} from 'react-redux';
 import {gettext, isWireContext} from 'utils';
 
 import {removeNewItems} from 'wire/actions';
-import FilterButton from 'wire/components/filters/FilterButton';
 import {loadMyWireTopic} from 'wire/actions';
 import {loadMyAgendaTopic} from 'agenda/actions';
 import {CollapseBoxWithButton} from '../../ui/components/Collapse';
 import {TopicItem} from './TopicItem';
-import {globalTopicsEnabledSelector} from 'ui/selectors';
-import { SidebarFolder } from '../../components/SidebarFolder';
+import {SidebarFolder} from '../../components/SidebarFolder';
 
 const manageTopics = () => document.dispatchEvent(new Event('manage_topics'));
 
-function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNewItems, globalTopicsEnabled, userFolders, companyFolders}) {
+function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNewItems, userFolders, companyFolders}) {
     const clickTopic = (event, topic) => {
         event.preventDefault();
         removeNewItems(topic._id);
@@ -62,7 +60,7 @@ function TopicsTab({topics, loadMyTopic, newItemsByTopic, activeTopic, removeNew
             </React.Fragment>
         );
 
-    }
+    };
 
     const renderFolders = (folders, topics) => folders.map((folder) => {
         const folderTopics = topics.filter((topic) => topic.folder === folder._id);
@@ -119,10 +117,11 @@ TopicsTab.propTypes = {
     topics: PropTypes.array.isRequired,
     newItemsByTopic: PropTypes.object,
     activeTopic: PropTypes.object,
+    userFolders: PropTypes.array,
+    companyFolders: PropTypes.array,
 
     removeNewItems: PropTypes.func.isRequired,
     loadMyTopic: PropTypes.func.isRequired,
-    globalTopicsEnabled: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
@@ -130,7 +129,6 @@ const mapStateToProps = (state) => ({
     userFolders: state.userFolders || [],
     companyFolders: state.companyFolders || [],
     newItemsByTopic: state.newItemsByTopic,
-    globalTopicsEnabled: globalTopicsEnabledSelector(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

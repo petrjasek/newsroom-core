@@ -13,7 +13,7 @@ const TopicList = ({topics, selectedTopicId, actions, users, folders, folderPopo
     }
 
     const renderTopic = (topic) => (
-        <Topic key={topic._id} topic={topic} actions={actions} users={users} selectedTopicId={selectedTopicId} />
+        <Topic key={topic._id} topic={topic} actions={actions} users={users} selected={selectedTopicId === topic._id} />
     );
 
     const renderedFolders = folders.map((folder) => {

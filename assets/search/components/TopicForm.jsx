@@ -18,8 +18,8 @@ const TOPIC_NAME_MAXLENGTH = 30;
 const getFolderName = (topic, folders) => {
     const folder = topic.folder ? folders.find((folder) => folder._id == topic.folder) : null;
 
-    return folder ? folder.name : gettext("Add to folder");
-}
+    return folder ? folder.name : gettext('Add to folder');
+};
 
 const TopicForm = ({original, topic, save, onChange, globalTopicsEnabled, onSubscribeChanged, readOnly, folders, onFolderChange}) => (
     <form onSubmit={save}>
@@ -85,7 +85,7 @@ const TopicForm = ({original, topic, save, onChange, globalTopicsEnabled, onSubs
                         </div>
                     </FormSection>
                 )}
-                <FormSection name={gettext("Organize your Topic")}>
+                <FormSection name={gettext('Organize your Topic')}>
                     <div className="nh-container nh-container--direction-row mb-3 pt-2 pb-3">
                         <Dropdown
                             small={true}
@@ -94,11 +94,11 @@ const TopicForm = ({original, topic, save, onChange, globalTopicsEnabled, onSubs
                             label={getFolderName(topic, folders)}
                         >
                             <button
-                                key={"top"}
+                                key={'top'}
                                 type="button"
                                 className='dropdown-item'
                                 onClick={() => onFolderChange(null)}
-                            >{gettext("Top level")}</button>
+                            >{gettext('Top level')}</button>
                             {folders.map((folder) => (
                                 <button key={folder._id}
                                     type="button"
@@ -113,7 +113,7 @@ const TopicForm = ({original, topic, save, onChange, globalTopicsEnabled, onSubs
                 </FormSection>
             </div>
             <div className="nh-flex__row">
-                <FormSection name={gettext("Topic details")}>
+                <FormSection name={gettext('Topic details')}>
                     <TopicParameters
                         topic={topic}
                     />

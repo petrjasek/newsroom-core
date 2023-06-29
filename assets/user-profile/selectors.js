@@ -9,9 +9,9 @@ export const userSectionsSelector = (state) => get(state, 'userSections');
 export const topicEditorFullscreenSelector = (state) => get(state, 'editorFullscreen') || false;
 export const foldersSelector = (state) => {
     const sectionMapping = {
-        topics: "wire",
-        events: "agenda",
-        monitoring: "monitoring",
+        topics: 'wire',
+        events: 'agenda',
+        monitoring: 'monitoring',
     };
 
     const activeSection = sectionMapping[state.selectedMenu];

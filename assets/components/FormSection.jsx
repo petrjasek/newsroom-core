@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import PropTypes from 'prop-types';
 
 export function FormSection({name, children}) {
     const [opened, setOpened] = useState(name == null);
@@ -21,3 +22,8 @@ export function FormSection({name, children}) {
         </div>
     );
 }
+
+FormSection.propTypes = {
+    name: PropTypes.string.isRequired,
+    children: PropTypes.node,
+};

@@ -269,9 +269,7 @@ class TopicEditor extends React.Component {
                         ))}
                     </ul>
                 )}
-                <div className={classNames(
-                    'list-item__preview-content',
-                )}>
+                <div className="list-item__preview-content">
                     {this.state.activeTab === 'topic' && updatedTopic && (
                         <React.Fragment>
                             <TopicForm
