@@ -187,6 +187,7 @@ class UserProfileApp extends React.Component {
             />,
             dropdown,
             profile,
+            <div key="dropdown-placeholder" id="dropdown-placeholder"></div>,
         ];
     }
 }

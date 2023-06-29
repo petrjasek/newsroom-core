@@ -15,7 +15,9 @@ export function FormSection({name, children}) {
                     <h3>{name}</h3>
                 </div>
             </div>
-            {opened ? (children) : null}
+            <div>
+                {opened ? (children) : null}
+            </div>
         </div>
     );
 }

@@ -9,7 +9,6 @@ import {canUserEditTopic} from 'topics/utils';
 import types from 'wire/types';
 
 import TopicForm from './TopicForm';
-import TopicParameters from './TopicParameters';
 import {fetchNavigations} from 'navigations/actions';
 import {submitFollowTopic as submitWireFollowTopic, subscribeToTopic, unsubscribeToTopic} from 'search/actions';
 import {submitFollowTopic as submitProfileFollowTopic, hideModal, setTopicEditorFullscreen} from 'user-profile/actions';
@@ -226,6 +225,8 @@ class TopicEditor extends React.Component {
 
         return (
             <div
+                role="dialog"
+                aria-label={this.getTitle()}
                 data-test-id="user-topic-editor"
                 className={showTabs ? 'list-item__preview' : containerClasses}
             >
@@ -269,8 +270,7 @@ class TopicEditor extends React.Component {
                     </ul>
                 )}
                 <div className={classNames(
-                    'list-item__preview-form',
-                    {'list-item__preview-form--no-padding': this.state.activeTab === 'subscribers'}
+                    'list-item__preview-content',
                 )}>
                     {this.state.activeTab === 'topic' && updatedTopic && (
                         <React.Fragment>
@@ -284,10 +284,6 @@ class TopicEditor extends React.Component {
                                 readOnly={isReadOnly}
                                 folders={this.props.folders}
                                 onFolderChange={this.onFolderChange}
-                            />
-                            <TopicParameters
-                                topic={updatedTopic}
-                                navigations={this.props.navigations}
                             />
                         </React.Fragment>
                     )}
