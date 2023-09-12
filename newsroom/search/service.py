@@ -45,7 +45,7 @@ def query_string(
     query: str,
     default_operator: Literal["AND", "OR"] = "AND",
     fields: List[str] = ["*"],
-    multimatch_type: Literal["cross_fields", "best_fields"] = "cross_fields",
+    multimatch_type: Literal["combined_fields", "best_fields"] = "combined_fields",
     analyze_wildcard=False,
 ):
     query_string_settings = app.config["ELASTICSEARCH_SETTINGS"]["settings"]["query_string"]
@@ -444,6 +444,7 @@ class BaseSearchService(Service):
 
         search.args["size"] = int(search.args.get("size", self.default_page_size))
         search.args["from"] = int(search.args.get("from", 0))
+        print("SORT", search.args["sort"])
 
     def prefill_search_section(self, search):
         """Prefill the search section
@@ -782,7 +783,11 @@ class BaseSearchService(Service):
         if search.advanced.get("all"):
             search.query["bool"].setdefault("must", []).append(
                 query_string(
-                    search.advanced["all"], "AND", fields=fields, multimatch_type="cross_fields", analyze_wildcard=True
+                    search.advanced["all"],
+                    "AND",
+                    fields=fields,
+                    multimatch_type="combined_fields",
+                    analyze_wildcard=True,
                 )
             )
 

@@ -18,7 +18,7 @@ def test_wire_search_fields(client, app):
     assert 0 == len(data["_items"])
 
 
-def test_wire_search_cross_fields(client, app):
+def test_wire_search_multiple_fields(client, app):
     app.data.insert(
         "items",
         [

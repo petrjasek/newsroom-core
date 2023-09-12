@@ -54,7 +54,7 @@ def test_apply_section_filter(client, app):
                 "analyze_wildcard": query_string_settings["analyze_wildcard"],
                 "lenient": True,
                 "fields": ["*"],
-                "type": "cross_fields",
+                "type": "combined_fields",
             }
         } in search.query["bool"]["filter"]
 
@@ -69,7 +69,7 @@ def test_apply_section_filter(client, app):
                 "analyze_wildcard": query_string_settings["analyze_wildcard"],
                 "lenient": True,
                 "fields": ["*"],
-                "type": "cross_fields",
+                "type": "combined_fields",
             }
         } in search.query["bool"]["filter"]
 
@@ -149,7 +149,7 @@ def test_apply_products_filter(client, app):
                         "analyze_wildcard": query_string_settings["analyze_wildcard"],
                         "lenient": True,
                         "fields": app.config["WIRE_SEARCH_FIELDS"],
-                        "type": "cross_fields",
+                        "type": "combined_fields",
                     }
                 } in search.query["bool"]["should"]
 
@@ -185,7 +185,7 @@ def test_apply_request_filter__query_string(client, app):
                 "analyze_wildcard": query_string_settings["analyze_wildcard"],
                 "lenient": True,
                 "fields": app.config["WIRE_SEARCH_FIELDS"],
-                "type": "cross_fields",
+                "type": "combined_fields",
             }
         } in search.query["bool"]["must"]
 
@@ -198,7 +198,7 @@ def test_apply_request_filter__query_string(client, app):
                 "analyze_wildcard": query_string_settings["analyze_wildcard"],
                 "lenient": True,
                 "fields": app.config["WIRE_SEARCH_FIELDS"],
-                "type": "cross_fields",
+                "type": "combined_fields",
             }
         } in search.query["bool"]["must"]
 
