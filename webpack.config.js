@@ -34,6 +34,7 @@ const config = {
         common: path.resolve(__dirname, 'assets/common.ts'),
         design_js: path.resolve(__dirname, 'assets/design_pages.ts'),
         company_admin_js: path.resolve(__dirname, 'assets/company-admin/index.ts'),
+        firebase_change_password_js: path.resolve(__dirname, 'assets/auth/firebase/change_password.ts'),
     },
     output: {
         path: path.resolve(process.cwd(), 'dist'),

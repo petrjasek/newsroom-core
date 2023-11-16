@@ -1,5 +1,6 @@
 import flask
 import bcrypt
+import logging
 
 from bson import ObjectId
 from flask import current_app as app, abort
@@ -9,7 +10,7 @@ from superdesk.utc import utcnow
 
 from newsroom.types import AuthProviderType
 from newsroom.decorator import admin_only, login_required
-from newsroom.auth import blueprint, get_auth_user_by_email, get_company, get_user, get_user_by_email, get_company_from_user
+from newsroom.auth import blueprint, get_auth_user_by_email, get_company, get_user, get_user_by_email, get_company_from_user, get_user_required
 from newsroom.auth.forms import SignupForm, LoginForm, TokenForm, ResetPasswordForm
 from newsroom.auth.utils import (
     clear_user_session,
@@ -31,7 +32,8 @@ from newsroom.limiter import limiter
 
 from .token import generate_auth_token, verify_auth_token
 
-from .firebase import firebase_auth_provider
+
+logger = logging.getLogger(__name__)
 
 
 @blueprint.route("/login", methods=["GET", "POST"])
@@ -287,16 +289,18 @@ def impersonate_stop():
     return flask.redirect(flask.url_for("settings.app", app_id="users"))
 
 
-@blueprint.route("/change_password", methods=["POST", "GET"])
+@blueprint.route("/change_password", methods=["GET", "POST"])
 @login_required
 def change_password():
     form = ResetPasswordForm()
-    user = get_user()
+    user = get_user_required()
     company = get_company(user)
     auth_provider = get_company_auth_provider(company)
 
+    if auth_provider["auth_type"] == AuthProviderType.FIREBASE.value:
+        return flask.render_template("change_password.html", form=form, user=user, firebase=1)
+
     if form.validate_on_submit():
-        print("RESET", auth_provider, form.data)
-        firebase_auth_provider.change_password(user, form.data["old_password"], form.data["new_password"])
+        raise NotImplementedError("change password is not implemented")
 
     return flask.render_template("change_password.html", form=form)

@@ -660,3 +660,10 @@ AUTH_PROVIDERS = [
 #: .. versionadded: 2.5.0
 #:
 AGENDA_SHOW_MULTIDAY_ON_START_ONLY = True
+
+FIREBASE_CLIENT_CONFIG = {
+    "apiKey": env("FIREBASE_API_KEY"),
+    "authDomain": env("FIREBASE_AUTH_DOMAIN"),
+    "projectId": env("FIREBASE_PROJECT_ID"),
+    "messagingSenderId": env("FIREBASE_SENDER_ID"),
+}
