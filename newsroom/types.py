@@ -98,6 +98,7 @@ class AuthProviderType(Enum):
     PASSWORD = "password"
     GOOGLE_OAUTH = "google_oauth"
     SAML = "saml"
+    FIREBASE = "firebase"
 
 
 class AuthProviderFeatures(TypedDict, total=False):
