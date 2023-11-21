@@ -16,14 +16,14 @@ import {
 
 import {RENDER_MODAL, CLOSE_MODAL, MODAL_FORM_VALID, MODAL_FORM_INVALID} from 'actions';
 
-import {modalReducer} from 'reducers';
+import {IModalState, modalReducer} from 'reducers';
 import {GET_NAVIGATIONS, QUERY_NAVIGATIONS} from 'navigations/actions';
 import {SET_TOPICS} from '../search/actions';
-import {ITopic, ITopicFolder, IUser} from 'interfaces';
+import {ISection, ITopic, ITopicFolder, IUser} from 'interfaces';
 
 export interface IUserProfileState {
     user: IUser | null;
-    editedUser: IUser | null;
+    editedUser: Partial<IUser> | null;
     company: string | null;
     topics: ITopic[];
     topicsById: {[_id: ITopic['_id']]: ITopic};
@@ -38,11 +38,17 @@ export interface IUserProfileState {
     locators: [];
     companyFolders: ITopicFolder[];
     userFolders: ITopicFolder[];
-    authProviderFeatures: {
-        change_password?: boolean;
-        verify_password?: boolean;
+    authProviderFeatures?: {
+        change_password: boolean;
+        verify_password: boolean;
     };
-    errors: {[key: string]: string} | null;
+    errors: {[key: string]: string[]} | null;
+    modal?: IModalState;
+    userSections?: ISection[];
+    monitoringList?: Array<any>;
+    monitoringAdministrator?: string;
+    uiConfigs?: any;
+    groups?: Array<any>;
 }
 
 const initialState: IUserProfileState = {
@@ -62,7 +68,7 @@ const initialState: IUserProfileState = {
     locators: [],
     companyFolders: [],
     userFolders: [],
-    authProviderFeatures: {},
+    errors: {},
 };
 
 export default function itemReducer(state: IUserProfileState = initialState, action: any): IUserProfileState {
@@ -114,11 +120,7 @@ export default function itemReducer(state: IUserProfileState = initialState, act
     }
 
     case EDIT_USER: {
-
-        const target = action.event.target;
-        const field = target.name;
-        const editedUser = Object.assign({}, state.editedUser);
-        editedUser[field] = target.type === 'checkbox' ? target.checked : target.value;
+        const editedUser = Object.assign({}, state.editedUser, action.payload);
         return {...state, editedUser, errors: null};
     }
 
@@ -135,7 +137,10 @@ export default function itemReducer(state: IUserProfileState = initialState, act
             monitoringAdministrator: action.data.monitoring_administrator,
             uiConfigs: action.data.ui_configs,
             groups: action.data.groups || [],
-            authProviderFeatures: action.data.authProviderFeatures || {},
+            authProviderFeatures: {
+                verify_password: action.data.authProviderFeatures?.verify_password === true,
+                change_password: action.data.authProviderFeatures?.change_password === true,
+            },
         };
     }
 

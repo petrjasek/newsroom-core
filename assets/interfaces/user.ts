@@ -45,4 +45,5 @@ export interface IUser {
     };
 }
 
-export type IUserEditableField = 'first_name' | 'last_name' | 'phone' | 'mobile' | 'role' | 'receive_email' | 'receive_app_notifications';
+type IUserProfileEditable = Pick<IUser, 'first_name' | 'last_name' | 'phone' | 'mobile' | 'role' | 'locale' | 'receive_email' | 'receive_app_notifications'>;
+export type IUserProfileUpdates = Partial<IUserProfileEditable>;

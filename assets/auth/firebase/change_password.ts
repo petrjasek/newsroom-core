@@ -1,5 +1,5 @@
-import { auth } from './init';
-import { signInWithEmailAndPassword, updatePassword, AuthError } from 'firebase/auth';
+import {auth} from './init';
+import {signInWithEmailAndPassword, updatePassword, AuthError} from 'firebase/auth';
 
 declare const firebaseUserEmail : string;
 
@@ -11,9 +11,9 @@ if (form != null) {
         event.preventDefault();
 
         const data = new FormData(form);
-        const oldPassword = data.get("old_password") as string;
-        const newPassword = data.get("new_password") as string;
-        const newPassword2 = data.get("new_password2") as string;
+        const oldPassword = data.get('old_password') as string;
+        const newPassword = data.get('new_password') as string;
+        const newPassword2 = data.get('new_password2') as string;
 
         if (newPassword !== newPassword2) {
             form.submit();
@@ -21,7 +21,7 @@ if (form != null) {
 
         signInWithEmailAndPassword(auth, firebaseUserEmail, oldPassword).then((userCredential) => {
             return updatePassword(userCredential.user, newPassword).then(() => {
-                firebaseStatus.value = "OK";
+                firebaseStatus.value = 'OK';
                 form.submit();
             });
         }).catch((reason: AuthError) => {

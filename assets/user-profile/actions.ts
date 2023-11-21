@@ -1,4 +1,4 @@
-import {ITopic, ITopicFolder, IUser, IUserEditableField} from 'interfaces';
+import {ITopic, ITopicFolder, IUser} from 'interfaces';
 
 import {gettext, notify, errorHandler} from 'utils';
 import server from 'server';
@@ -7,6 +7,7 @@ import {store as userProfileStore} from './store';
 import {getLocale} from '../utils';
 import {reloadMyTopics as reloadMyAgendaTopics} from '../agenda/actions';
 import {reloadMyTopics as reloadMyWireTopics} from '../wire/actions';
+import {IUserProfileUpdates} from 'interfaces/user';
 
 export const GET_TOPICS = 'GET_TOPICS';
 export function getTopics(topics: any) {
@@ -19,8 +20,8 @@ export function getUser(user: any) {
 }
 
 export const EDIT_USER = 'EDIT_USER';
-export function editUser(field: IUserEditableField, value: string | boolean) {
-    return {type: EDIT_USER, payload: {field, value}};
+export function editUser(payload: IUserProfileUpdates) {
+    return {type: EDIT_USER, payload};
 }
 
 export const INIT_DATA = 'INIT_DATA';

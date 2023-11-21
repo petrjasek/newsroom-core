@@ -1,5 +1,5 @@
-import { auth } from './init'
-import { sendPasswordResetEmail } from 'firebase/auth';
+import {auth} from './init';
+import {sendPasswordResetEmail} from 'firebase/auth';
 
 declare const nextUrl: string;
 
@@ -17,26 +17,26 @@ if (sendButton != null) {
         }
 
         const data = new FormData(form);
-        const email = data.get("email") as string;
+        const email = data.get('email') as string;
 
-        params.append("email", email);
+        params.append('email', email);
         url.search = params.toString();
 
         sendButton.disabled = true;
         sendPasswordResetEmail(auth, email, {url: url.toString()})
-        .then(() => {
-            // set `email_sent` to true, so server knows password reset was handled by firebase
-            form.submit();
-        })
-        .catch((reason) => {
-            if (reason.code === 'auth/user-not-found') {
-                // User not registered with OAuth, try attempting normal password reset
+            .then(() => {
+                // set `email_sent` to true, so server knows password reset was handled by firebase
                 form.submit();
-            } else {
-                console.error(reason);
-                sendButton.disabled = false; // allow another request if there was an error
-            }
-        });
+            })
+            .catch((reason) => {
+                if (reason.code === 'auth/user-not-found') {
+                    // User not registered with OAuth, try attempting normal password reset
+                    form.submit();
+                } else {
+                    console.error(reason);
+                    sendButton.disabled = false; // allow another request if there was an error
+                }
+            });
 
         return false;
     };
