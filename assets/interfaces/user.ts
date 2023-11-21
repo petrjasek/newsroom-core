@@ -44,3 +44,5 @@ export interface IUser {
         last_run_time?: TDatetime;
     };
 }
+
+export type IUserEditableField = 'first_name' | 'last_name' | 'phone' | 'mobile' | 'role' | 'receive_email' | 'receive_app_notifications';

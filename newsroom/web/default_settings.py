@@ -649,7 +649,7 @@ AUTH_PROVIDERS = [
         "_id": "newshub",
         "name": lazy_gettext("Newshub"),
         "auth_type": "password",
-        "features": {"verify_email": True},
+        "features": {"verify_email": True, "change_password": True},
     }
 ]
 
@@ -667,3 +667,5 @@ FIREBASE_CLIENT_CONFIG = {
     "projectId": env("FIREBASE_PROJECT_ID"),
     "messagingSenderId": env("FIREBASE_SENDER_ID"),
 }
+
+FIREBASE_ENABLED = bool(FIREBASE_CLIENT_CONFIG["apiKey"] and FIREBASE_CLIENT_CONFIG["authDomain"])

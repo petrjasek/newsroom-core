@@ -9,7 +9,7 @@ from superdesk import get_resource_service
 from werkzeug.exceptions import BadRequest, NotFound
 
 from newsroom.user_roles import UserRole
-from newsroom.auth import get_user, get_user_by_email, get_company
+from newsroom.auth import get_user, get_user_by_email, get_company, get_user_required
 from newsroom.auth.utils import (
     send_token,
     add_token_data,
@@ -48,17 +48,19 @@ def get_settings_data():
 
 
 def get_view_data():
-    user = get_user()
-    company = user["company"] if user and user.get("company") else None
+    user = get_user_required()
+    company = get_company(user)
+    auth_provider = get_company_auth_provider(company)
     rv = {
         "user": user if user else None,
-        "company": str(company),
+        "company": str(company["_id"]) if company else "",
         "topics": get_user_topics(user["_id"]) if user else [],
         "companyName": get_user_company_name(user),
         "locators": get_vocabulary("locators"),
         "monitoring_list": get_monitoring_for_company(user),
         "ui_configs": {config["_id"]: config for config in query_resource("ui_config")},
         "groups": app.config.get("WIRE_GROUPS", []),
+        "authProviderFeatures": auth_provider["features"],
     }
 
     if app.config.get("ENABLE_MONITORING"):

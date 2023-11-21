@@ -11,6 +11,7 @@ from superdesk import register_resource  # noqa
 from typing import Dict, List, Tuple
 
 from newsroom.user_roles import UserRole
+from newsroom.factory.app import BaseNewsroomApp
 
 __version__ = "2.5.0-dev"
 

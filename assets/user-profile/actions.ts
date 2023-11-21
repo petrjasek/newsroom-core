@@ -1,4 +1,4 @@
-import {ITopic, ITopicFolder, IUser} from 'interfaces';
+import {ITopic, ITopicFolder, IUser, IUserEditableField} from 'interfaces';
 
 import {gettext, notify, errorHandler} from 'utils';
 import server from 'server';
@@ -19,8 +19,8 @@ export function getUser(user: any) {
 }
 
 export const EDIT_USER = 'EDIT_USER';
-export function editUser(event: any) {
-    return {type: EDIT_USER, event};
+export function editUser(field: IUserEditableField, value: string | boolean) {
+    return {type: EDIT_USER, payload: {field, value}};
 }
 
 export const INIT_DATA = 'INIT_DATA';

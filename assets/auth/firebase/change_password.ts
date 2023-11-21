@@ -1,13 +1,12 @@
 import { auth } from './init';
-import { signInWithEmailAndPassword, updatePassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, updatePassword, AuthError } from 'firebase/auth';
 
-declare const userEmail : string;
+declare const firebaseUserEmail : string;
 
 const form = document.getElementById('formChangePassword') as HTMLFormElement;
+const firebaseStatus = document.getElementById('firebase-status') as HTMLInputElement;
 
-if (form == null) {
-    console.error("Can't find the change password form.");
-} else {
+if (form != null) {
     form.onsubmit = (event) => {
         event.preventDefault();
 
@@ -16,12 +15,18 @@ if (form == null) {
         const newPassword = data.get("new_password") as string;
         const newPassword2 = data.get("new_password2") as string;
 
-        console.info("TEST", userEmail, oldPassword, newPassword, newPassword2);
+        if (newPassword !== newPassword2) {
+            form.submit();
+        }
 
-        signInWithEmailAndPassword(auth, userEmail, oldPassword).then((userCredential) => {
-            updatePassword(userCredential.user, oldPassword);
-        }).catch((reason) => {
-            console.error(reason);
+        signInWithEmailAndPassword(auth, firebaseUserEmail, oldPassword).then((userCredential) => {
+            return updatePassword(userCredential.user, newPassword).then(() => {
+                firebaseStatus.value = "OK";
+                form.submit();
+            });
+        }).catch((reason: AuthError) => {
+            firebaseStatus.value = reason.code;
+            form.submit();
         });
 
         return false;

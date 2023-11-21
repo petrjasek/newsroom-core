@@ -49,11 +49,14 @@ class UserDashboardEntry(TypedDict):
     topic_ids: List[ObjectId]
 
 
-class UserData(TypedDict, total=False):
+class UserRequired(TypedDict):
     _id: ObjectId
+    email: str
+
+
+class UserData(UserRequired, total=False):
     first_name: str
     last_name: str
-    email: str
     phone: str
     mobile: str
     role: str
@@ -103,6 +106,7 @@ class AuthProviderType(Enum):
 
 class AuthProviderFeatures(TypedDict, total=False):
     verify_email: bool
+    change_password: bool
 
 
 class AuthProvider(TypedDict):
@@ -111,10 +115,11 @@ class AuthProvider(TypedDict):
     auth_type: AuthProviderType
     features: AuthProviderFeatures
 
-
-class Company(TypedDict, total=False):
+class CompanyRequired(TypedDict):
     _id: ObjectId
     name: str
+
+class Company(CompanyRequired, total=False):
     products: List[ProductRef]
     sections: Dict[str, bool]
     restrict_coverage_info: bool

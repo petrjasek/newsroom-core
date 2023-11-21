@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {IUser} from 'interfaces';
+import {IUser, IUserEditableField} from 'interfaces';
 import {gettext, getSubscriptionTimesString} from 'utils';
 
 import TextInput from 'components/TextInput';
@@ -16,11 +16,12 @@ import {
     setError,
     openEditTopicNotificationsModal,
 } from '../../actions';
+import {IUserProfileState} from 'user-profile/reducers';
 
 interface IProps {
     user: IUser;
     errors: {[key: string]: string};
-    onChange(event: React.ChangeEvent): void;
+    onChange(field: IUserField, value: string | bool): void;
     saveUser(): void;
     setError(errors: {[key: string]: string}): void;
     fetchUser(userId: IUser['_id']): void;
@@ -96,6 +97,17 @@ class UserProfile extends React.Component<IProps, any> {
                                     value={user.email}
                                     readOnly
                                 />
+                            </div>
+
+                            <div className="col-lg-12">
+                                <div className="form-group">
+                                    <a
+                                        href="/change_password"
+                                        className="nh-button nh-button--small nh-button--tertiary"
+                                    >
+                                        {gettext('Change password')}
+                                    </a>
+                                </div>
                             </div>
 
                             <div className="col-lg-6">
@@ -202,15 +214,16 @@ class UserProfile extends React.Component<IProps, any> {
     }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: IUserProfileState) => ({
     user: state.editedUser,
     errors: state.errors ?? {},
+    authProviderFeatures: state.authProviderFeatures,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
     saveUser: () => dispatch(saveUser()),
     fetchUser: (userId: IUser['_id']) => dispatch(fetchUser(userId)),
-    onChange: (event: React.ChangeEvent) => dispatch(editUser(event)),
+    onChange: (field: IUserEditableField, value: boolean | string) => dispatch(editUser(field, value)),
     setError: (errors: {[key: string]: string}) => dispatch(setError(errors)),
     openEditTopicNotificationsModal: () => dispatch(openEditTopicNotificationsModal()),
 });
