@@ -626,8 +626,6 @@ class BaseSearchService(Service):
         if not search.is_admin:
             if not search.company:
                 abort(403, gettext("User does not belong to a company."))
-            elif not len(search.products):
-                abort(403, gettext("Your company doesn't have any products defined."))
             elif search.args.get("product") and not self.is_validate_product(search):
                 abort(403, gettext("Your product is not assigned to you or your company."))
             # If a product list string has been provided it is assumed to be a comma delimited string of product id's
@@ -721,6 +719,9 @@ class BaseSearchService(Service):
 
         if search.query["bool"]["should"]:
             search.query["bool"]["minimum_should_match"] = 1
+        elif not search.is_admin:
+            # no products and not an admin, show none
+            search.query["bool"]["must"].append({"match_none": {}})
 
     def get_product_filter(self, search, product):
         """Generate the filter for a single product
