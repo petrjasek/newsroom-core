@@ -21,6 +21,7 @@ import {GET_NAVIGATIONS, QUERY_NAVIGATIONS} from 'navigations/actions';
 import {SET_TOPICS} from '../search/actions';
 import {ISection, ITopic, ITopicFolder, IUser} from 'interfaces';
 import {GET_COMPANY_USERS} from 'companies/actions';
+import {update} from 'lodash';
 
 export interface IUserProfileState {
     user: IUser | null;
@@ -208,7 +209,8 @@ export default function itemReducer(state: IUserProfileState = initialState, act
             userFolders: action.payload.userFolders,
         };
 
-    case TOPIC_UPDATED:
+    case TOPIC_UPDATED: {
+        const updatedTopic = {...action.payload.topic, ...action.payload.updates};
         return {
             ...state,
             topics: state.topics.map((topic: any) => {
@@ -216,10 +218,12 @@ export default function itemReducer(state: IUserProfileState = initialState, act
                     return topic;
                 }
 
-                return {...topic, ...action.payload.updates};
+                return updatedTopic;
             }),
-            selectedItem: state.selectedItem?._id === action.payload.topic._id ? {...state.selectedItem, ...action.payload.updates} : state.selectedItem,
+            topicsById: {...state.topicsById, [action.payload.topic._id]: updatedTopic},
+            selectedItem: state.selectedItem?._id === action.payload.topic._id ? updatedTopic : state.selectedItem,
         };
+    }
 
     case FOLDER_UPDATED: {
         const foldersToAccess = state.companyFolders.find(({_id}: ITopicFolder) => action.payload.folder._id === _id) != null
