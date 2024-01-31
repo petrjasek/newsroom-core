@@ -25,6 +25,10 @@ from superdesk import get_resource_service
 NAV_1 = ObjectId("5e65964bf5db68883df561c0")
 NAV_2 = ObjectId("5e65964bf5db68883df561c1")
 
+PROD_1 = ObjectId()
+PROD_2 = ObjectId()
+PROD_3 = ObjectId()
+
 
 @fixture
 def setup_products(app):
@@ -50,7 +54,7 @@ def setup_products(app):
         "products",
         [
             {
-                "_id": 10,
+                "_id": PROD_1,
                 "name": "product test",
                 "sd_product_id": 1,
                 "companies": [COMPANY_1_ID],
@@ -59,11 +63,19 @@ def setup_products(app):
                 "is_enabled": True,
             },
             {
-                "_id": 11,
+                "_id": PROD_2,
                 "name": "product test 2",
                 "sd_product_id": 2,
                 "companies": [COMPANY_1_ID],
                 "navigations": [NAV_2],
+                "product_type": "wire",
+                "is_enabled": True,
+            },
+            {
+                "_id": PROD_3,
+                "name": "product test 3",
+                "query": "*",
+                "navigations": [NAV_1, NAV_2],
                 "product_type": "wire",
                 "is_enabled": True,
             },
@@ -918,14 +930,14 @@ def test_navigation_for_public_users(client, app, setup_products):
 
     # add products to user
     app.data.update(
-        "users", PUBLIC_USER_ID, {"products": [{"section": "wire", "_id": 10}, {"section": "wire", "_id": 11}]}, user
+        "users", PUBLIC_USER_ID, {"products": [{"section": "wire", "_id": PROD_1}, {"section": "wire", "_id": PROD_2}]}, user
     )
 
     # and remove those from company
     app.data.update(
         "companies",
         COMPANY_1_ID,
-        {"products": [{"section": "wire", "_id": 10, "seats": 1}, {"section": "wire", "_id": 11, "seats": 1}]},
+        {"products": [{"section": "wire", "_id": PROD_1, "seats": 1}, {"section": "wire", "_id": PROD_2, "seats": 1}, {"section": "wire", "_id": PROD_3, "seats": 0}]},
         company,
     )
 

@@ -517,6 +517,8 @@ class BaseSearchService(Service):
                     if user_products:
                         # User has Products assigned
                         search.products += user_products
+                    
+                    print("USER", user_products)
 
                 # add unlimited (seats=0) company products
                 company_products = get_products_by_company(
@@ -526,10 +528,14 @@ class BaseSearchService(Service):
                     unlimited_only=True,
                 )
 
+                print("COMPANY", company_products)
+
                 if company_products:
                     for product in company_products:
                         if product not in search.products:
                             search.products.append(product)
+
+                print("PRODUCTS", search.products)
 
         else:
             search.products = []
