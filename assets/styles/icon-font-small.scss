@@ -11,7 +11,7 @@
 		font-weight: $weight;
 	}
 }
-@include fontFace('aap_newsroom_icons_small','/static/fonts/aap_newsroom_icons_small', normal, normal);
+@include fontFace('aap_newsroom_icons_small','./static/fonts/aap_newsroom_icons_small', normal, normal);
 
 @mixin icon-base {
     --icon-size: var(--icon-size--x-small);

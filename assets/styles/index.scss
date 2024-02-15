@@ -2343,13 +2343,13 @@ article.list {
     display: inline-block;
     width: 74px;
     height: 16px;
-    background: transparent url(/static/logo-aap-photos.png) 0 0 no-repeat;
+    background: transparent url(./static/logo-aap-photos.png) 0 0 no-repeat;
     padding: 2px 0;
     @media only screen and (min--moz-device-pixel-ratio: 2),
         only screen and (-o-min-device-pixel-ratio: 2/1),
         only screen and (-webkit-min-device-pixel-ratio: 2),
         only screen and (min-device-pixel-ratio: 2) {
-            background: transparent url(/static/logo-aap-photos-x2.png) 0 0 no-repeat;
+            background: transparent url(./static/logo-aap-photos-x2.png) 0 0 no-repeat;
             background-size: 74px 16px;
     }
 }
@@ -2758,25 +2758,25 @@ article.list {
     &.coverage--active {
         &::before {
             background-color: $purple;
-            background-image: url('/static/overlay_icon--active.svg');
+            background-image: url('./static/overlay_icon--active.svg');
         }
     }
     &.coverage--assigned {
         &::before {
             background-color: $mid-blue;
-            background-image: url('/static/overlay_icon--assigned.svg');
+            background-image: url('./static/overlay_icon--assigned.svg');
         }
     }
     &.coverage--cancelled {
         &::before {
             background-color: $red;
-            background-image: url('/static/overlay_icon--cancelled.svg');
+            background-image: url('./static/overlay_icon--cancelled.svg');
         }
     }
     &.coverage--completed {
         &::before {
             background-color: $green;
-            background-image: url('/static/overlay_icon--completed.svg');
+            background-image: url('./static/overlay_icon--completed.svg');
         }
     }
 }
@@ -3163,7 +3163,7 @@ article.list {
             position: absolute;
             inset-block: 12px;
             inset-inline-start: 6px;
-            background-image: url('/static/drag-handle_dots.svg');
+            background-image: url('./static/drag-handle_dots.svg');
             background-repeat: repeat;
             background-size: contain;
             background-position: top center;

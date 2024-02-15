@@ -2,8 +2,8 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const TerserPlugin = require('terser-webpack-plugin-legacy');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 const config = {
     mode: 'development',
@@ -40,6 +40,7 @@ const config = {
         public_js: path.resolve(__dirname, 'assets/public/index.ts'),
     },
     output: {
+        clean: true,
         path: path.resolve(process.cwd(), 'dist'),
         publicPath: 'http://localhost:8080/',
         filename: '[name].[chunkhash].js',
