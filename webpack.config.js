@@ -2,11 +2,11 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const TerserPlugin = require('terser-webpack-plugin-legacy');
-const ObjectRestSpreadPlugin = require('@sucrase/webpack-object-rest-spread-plugin');
 
 const config = {
+    mode: 'development',
     entry: {
         newsroom_js: path.resolve(__dirname, 'assets/index.ts'),
         companies_js: path.resolve(__dirname, 'assets/companies/index.ts'),
@@ -94,16 +94,14 @@ const config = {
         mainFields: ['browser', 'main'],
     },
     plugins: [
-        new ObjectRestSpreadPlugin(),
-        new ManifestPlugin({writeToFileEmit: true}),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'common',
-            minChunks: Infinity,
-        }),
+        new WebpackManifestPlugin({writeToFileEmit: true}),
     ],
     devServer: {
         compress: true,
-        disableHostCheck: true,
+        host: 'local-ip',
+        static: {
+            directory: 'dist',
+        },
     },
 };
 
