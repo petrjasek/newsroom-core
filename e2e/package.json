@@ -10,14 +10,16 @@
     "babel-preset-react": "^6.24.1",
     "cypress": "^12.17.1",
     "http-server": "^14.1.1",
-    "webpack": "3.11.0",
-    "webpack-dev-server": "2.11.1"
+    "webpack": "^5.90.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.1",
+    "webpack-manifest-plugin": "^5.0.0"
   },
   "scripts": {
     "cypress-ui": "cypress open",
     "cypress-ci": "cypress run",
-    "build": "export NODE_ENV=production && webpack --progress --profile --colors",
-    "start": "webpack-dev-server --progress --colors --content-base dist --host 0.0.0.0",
+    "build": "webpack build --progress --mode development",
+    "start": "webpack serve --progress --mode development",
     "start-client-server": "http-server dist -p 8080 -s"
   }
 }
