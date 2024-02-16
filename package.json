@@ -7,13 +7,13 @@
     "url": "https://github.com/superdesk/newsroom-core.git"
   },
   "scripts": {
-    "start": "webpack serve --progress",
-    "build": "webpack --config webpack.config.js --progress",
+    "start": "webpack serve --progress --mode development",
+    "build": "webpack build --progress --mode production",
     "lint": "tsc --noEmit && eslint assets --ext .js --ext .jsx --ext .ts --ext .tsx",
     "fix": "eslint assets --ext .js --ext .jsx --ext .ts --ext .tsx --fix",
     "test": "karma start --single-run",
     "karma": "karma start",
-    "design-app": "webpack-dev-server --config=webpack.design.js"
+    "design-app": "webpack server --config=webpack.design.jsa --mode development"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.0.8",
@@ -64,7 +64,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^2.0.0",
     "karma-sourcemap-loader": "^0.3.8",
-    "karma-webpack": "^2.0.4",
+    "karma-webpack": "^5.0.1",
     "lodash": "^4.17.19",
     "mime-types": "^2.1.34",
     "moment": "2.29.4",
@@ -90,7 +90,6 @@
     "sinon": "^4.0.0",
     "store": "2.0.12",
     "style-loader": "^3.3.4",
-    "terser-webpack-plugin-legacy": "^1.2.5",
     "ts-loader": "^9.5.1",
     "typescript": "^4.9.5",
     "url-search-params-polyfill": "2.0.3",

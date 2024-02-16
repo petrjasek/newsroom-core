@@ -1,12 +1,10 @@
 /* eslint-env node */
 
 const path = require('path');
-const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin-legacy');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
-const config = {
-    mode: 'development',
+module.exports = (env, args) => ({
+    mode: args.mode === 'development' ? 'development' : 'production',
     entry: {
         newsroom_js: path.resolve(__dirname, 'assets/index.ts'),
         companies_js: path.resolve(__dirname, 'assets/companies/index.ts'),
@@ -98,22 +96,11 @@ const config = {
         new WebpackManifestPlugin({writeToFileEmit: true}),
     ],
     devServer: {
-        compress: true,
-        host: 'local-ip',
         static: {
             directory: 'dist',
         },
+        compress: true,
+        host: 'localhost',
+        port: 8080,
     },
-};
-
-if (process.env.NODE_ENV === 'production') {
-    config.plugins.push(new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    }));
-    config.plugins.push(new TerserPlugin({
-        cache: true,
-        parallel: true,
-    }));
-}
-
-module.exports = config;
+});

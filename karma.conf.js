@@ -1,23 +1,21 @@
 /* eslint-env node */
 
-const webpack = require('webpack');
-const webpackConfig = require('./webpack.config.js');
+const webpackConfig = require('./webpack.config.js')({}, {});
 
 module.exports = function(config) {
     config.set({
         files: [
-            'assets/tests.ts',
+            {pattern: 'assets/tests.ts', watched: false},
         ],
 
         preprocessors: {
-            'assets/tests.ts': ['webpack', 'sourcemap'],
+            'assets/tests.ts': ['webpack'],
         },
 
         webpack: {
+            mode: 'development',
             module: webpackConfig.module,
             resolve: webpackConfig.resolve,
-            plugins: webpackConfig.plugins.filter((plugin) => plugin instanceof webpack.ProvidePlugin),
-            devtool: 'inline-source-map',
         },
 
         webpackMiddleware: {
@@ -25,12 +23,7 @@ module.exports = function(config) {
         },
 
         reporters: ['dots'],
-        frameworks: ['jasmine'],
+        frameworks: ['jasmine', 'webpack'],
         browsers: ['ChromeHeadless'],
-
-        // Allow typescript files
-        mime: {
-            'text/x-typescript': ['ts', 'tsx'],
-        },
     });
 };
