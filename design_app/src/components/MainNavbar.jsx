@@ -9,7 +9,7 @@ function MainNavbar() {
                 {/* Default */}
                 <a href="#">
                     <h1 className="a11y-only">Newshub</h1>
-                    <img className="navbar__logo-img navbar__logo-img--en" src="static/newshub_logo.svg" alt="Newhub" aria-hidden="true" />
+                    <img className="navbar__logo-img navbar__logo-img--en" src="/static/newshub_logo.svg" alt="Newhub" aria-hidden="true" />
                 </a>
                 
                 {/* Canadian Press */}
