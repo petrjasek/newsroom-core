@@ -7,7 +7,10 @@ config.mode = "development";
 
 // workaround for https://github.com/jantimon/html-webpack-plugin/issues/1451
 config.plugins = [
-    new WebpackManifestPlugin({writeToFileEmit: true}),
+    new WebpackManifestPlugin({
+        writeToFileEmit: true,
+        publicPath: '',
+    }),
 ];
 
 module.exports = config;
