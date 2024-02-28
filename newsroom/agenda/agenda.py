@@ -1300,8 +1300,8 @@ class AgendaService(BaseSearchService):
                 c["watches"] = [ObjectId(u) for u in c["watches"]]
 
     def notify_new_coverage(self, agenda, wire_item):
-        user_dict = get_user_dict()
         company_dict = get_company_dict()
+        user_dict = get_user_dict(company_dict)
         notify_user_ids = filter_active_users(agenda.get("watches", []), user_dict, company_dict, events_only=True)
         for user_id in notify_user_ids:
             user = user_dict[str(user_id)]
@@ -1318,8 +1318,8 @@ class AgendaService(BaseSearchService):
     ):
         agenda = deepcopy(update_agenda)
         if agenda and original_agenda.get("state") != WORKFLOW_STATE.KILLED:
-            user_dict = get_user_dict()
             company_dict = get_company_dict()
+            user_dict = get_user_dict(company_dict)
             coverage_watched = None
             for c in original_agenda.get("coverages") or []:
                 if len(c.get("watches") or []) > 0:

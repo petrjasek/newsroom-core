@@ -361,8 +361,8 @@ def test_active_users_and_active_companies(client, app):
     )
 
     with app.test_request_context():
-        users = get_user_dict()
         companies = get_company_dict()
+        users = get_user_dict(companies)
 
         assert "1" in users
         assert "2" not in users

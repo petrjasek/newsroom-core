@@ -308,13 +308,11 @@ def is_account_enabled(user):
     return True
 
 
-def get_user_dict(use_globals: bool = True) -> Dict[str, User]:
+def get_user_dict(companies: Dict[str, Company], use_globals: bool = True) -> Dict[str, User]:
     """Get all active users indexed by _id."""
 
     def _get_users() -> Dict[str, User]:
         all_users = superdesk.get_resource_service("users").find(where={"is_enabled": True})
-
-        companies = get_company_dict(use_globals)
 
         return {
             str(user["_id"]): user

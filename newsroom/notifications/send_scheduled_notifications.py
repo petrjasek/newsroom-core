@@ -46,7 +46,7 @@ class SendScheduledNotificationEmails(Command):
         try:
             now_utc = utcnow().replace(second=0, microsecond=0)
             companies = get_company_dict(False)
-            users = get_user_dict(False)
+            users = get_user_dict(companies, False)
             user_topic_map = get_user_id_to_topic_for_subscribers(TopicNotificationType.SCHEDULED.value)
 
             schedules: List[NotificationQueue] = get_resource_service("notification_queue").get(req=None, lookup={})
