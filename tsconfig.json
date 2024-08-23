@@ -6,12 +6,13 @@
     "allowJs": true,
     "baseUrl": "./assets",
     "target": "ES2017",
-    "module": "commonjs",
+    "module": "ES6",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "jsx": "react",
-    "strict": true
+    "strict": true,
+    "moduleResolution": "node"
   }
 }

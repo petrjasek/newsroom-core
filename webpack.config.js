@@ -4,7 +4,6 @@ const path = require('path');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 const config = {
-    mode: 'production',
     entry: {
         newsroom_js: path.resolve(__dirname, 'assets/index.ts'),
         companies_js: path.resolve(__dirname, 'assets/companies/index.ts'),
@@ -49,8 +48,6 @@ const config = {
                 test: /\.(ts|tsx|js|jsx)$/,
                 include: [
                     path.resolve(__dirname, 'assets'),
-                    path.resolve(__dirname, 'node_modules/bootstrap'),
-                    path.resolve(process.cwd(), 'node_modules/bootstrap'),
                     process.cwd(), // for app
                 ],
                 loader: 'ts-loader',
@@ -92,7 +89,6 @@ const config = {
             app: path.resolve(process.cwd(), 'app'),
             'moment-timezone': 'moment-timezone/builds/moment-timezone-with-data-10-year-range',
         },
-        mainFields: ['browser', 'main'],
     },
     plugins: [
         new WebpackManifestPlugin({writeToFileEmit: true, publicPath: ''}),
