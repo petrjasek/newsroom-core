@@ -27,6 +27,7 @@ from superdesk.errors import SuperdeskApiError
 from superdesk.cache import cache_backend
 from elasticapm.contrib.flask import ElasticAPM
 from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 from newsroom.auth import SessionAuth
 from newsroom.exceptions import AuthorizationError
@@ -265,7 +266,13 @@ class BaseNewsroomApp(eve.Eve):
         if self.config.get("SENTRY_DSN"):
             sentry_sdk.init(
                 dsn=self.config["SENTRY_DSN"],
-                integrations=[FlaskIntegration()],
+                send_default_pii=True,
+                traces_sample_rate=self.config.get("SENTRY_TRACES_SAMPLE_RATE"),
+                profiles_sample_rate=self.config.get("SENTRY_PROFILES_SAMPLE_RATE"),
+                integrations=[
+                    FlaskIntegration(),
+                    CeleryIntegration(monitor_beat_tasks=True),
+                ],
             )
 
     def _get_apm_environment(self):
