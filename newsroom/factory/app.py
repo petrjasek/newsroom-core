@@ -225,9 +225,17 @@ class BaseNewsroomApp(SuperdeskEve):
             else:
                 return await render_template("500.html"), 500
 
+        async def handle_503(error: Exception):
+            self.logger.exception("A 503 exception was raised", exc_info=error)
+            if request and is_json_request(request):
+                return jsonify({"error": str(error), "code": 503}), 503
+            else:
+                return await render_template("500.html"), 503
+
         self.register_error_handler(AssertionError, assertion_error)
         self.register_error_handler(404, render_404)
         self.register_error_handler(403, render_403)
+        self.register_error_handler(503, handle_503)
         self.register_error_handler(SuperdeskApiError, superdesk_api_error)
         self.register_error_handler(AuthorizationError, authorization_error)
         self.register_error_handler(ValidationError, handle_validation_error)

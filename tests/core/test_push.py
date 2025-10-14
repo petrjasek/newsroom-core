@@ -4,10 +4,12 @@ import hmac
 import bson
 from unittest import mock
 from datetime import datetime, timedelta
+from newsroom.signals import push
 
 from bson import ObjectId
 from quart import json
 from quart.datastructures import FileStorage
+from flask import abort
 
 from newsroom.types import UserResourceModel, CompanyResource, UserRole, TopicResourceModel, SectionEnum
 from newsroom.utils import get_company_dict_async, get_user_dict_async
@@ -1141,3 +1143,16 @@ async def test_global_topic_after_deleting_user(client, app):
         item["guid"], [topic], list(users.values()), companies
     )
     assert matching == {topic_id}
+
+
+async def test_push_with_cancel_signal(client, app):
+    async def on_push(*args, **kwargs):
+        abort(503)
+
+    push.connect(on_push)
+
+    resp = await client.post("/push", json=item)
+
+    push.disconnect(on_push)
+
+    assert resp.status_code == 503
