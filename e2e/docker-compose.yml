@@ -42,6 +42,7 @@ services:
         environment:
             - WEB_CONCURRENCY=2
             - WEBPACK_MANIFEST_PATH=/opt/client-dist/manifest.json
+            - WEBPACK_ASSETS_URL=/static/dist/
             - MONGO_URI=mongodb://mongo:27017/newsroom
             - CONTENTAPI_MONGO_URI=mongodb://mongo:27017/newsroom
             - ELASTICSEARCH_URL=http://elastic:9200
